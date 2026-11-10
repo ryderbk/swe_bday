@@ -1,0 +1,80 @@
+:root {
+  --color-midnight: #17151b;
+  --color-midnight-light: #231f2a;
+  --color-midnight-dark: #0f0e12;
+  --color-midnight-surface: #1e1b24;
+
+  --color-ivory: #f5f0e8;
+  --color-ivory-light: #faf7f2;
+  --color-ivory-dark: #e8e1d5;
+  --color-ivory-warm: #f2ebe0;
+
+  --color-rose-muted: #a96e78;
+  --color-rose-soft: #c48a94;
+  --color-rose-deep: #8c5660;
+
+  --color-champagne: #d9b887;
+  --color-champagne-light: #ead5b5;
+  --color-champagne-dark: #bfa06e;
+
+  --color-rosewood: #55414c;
+  --color-rosewood-light: #6e5563;
+  --color-rosewood-dark: #3e2e37;
+
+  --font-serif: 'Cormorant Garamond', Playfair Display, Georgia, serif;
+  --font-sans: 'Manrope', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-handwriting: 'Caveat', cursive;
+}
+
+/* Texture overlays */
+.paper-texture {
+  background-color: var(--color-ivory);
+  background-image: radial-gradient(#d9b887 0.65px, transparent 0.65px), radial-gradient(#55414c 0.65px, #f5f0e8 0.65px);
+  background-size: 26px 26px;
+  background-position: 0 0, 13px 13px;
+}
+
+.paper-card {
+  background: #faf7f2;
+  border: 1px solid rgba(85, 65, 76, 0.12);
+  box-shadow: 0 4px 15px rgba(23, 21, 27, 0.05), 0 1px 3px rgba(85, 65, 76, 0.08);
+}
+
+.night-card {
+  background: rgba(30, 27, 36, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(217, 184, 135, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* 3D transforms */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

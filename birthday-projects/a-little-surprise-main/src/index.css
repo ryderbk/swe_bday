@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Great+Vibes&display=swap");
+@import "tailwindcss";
+
+
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: linear-gradient(
+    to bottom,
+    #fff5f7,
+    #ffe4ec
+  );
+
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
+
+.font-cursive {
+  font-family: "Caveat", cursive;
+}
+.font-romantic {
+  font-family: "Great Vibes", cursive;
+}
+::selection {
+  background-color: #ffb6c1;
+}
+
+/* Custom Scrollbar */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+@font-face {
+  font-family: "Babyday";
+  src: url("./assets/fonts/Babyday.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-babyday {
+  font-family: "Babyday", cursive;
+}

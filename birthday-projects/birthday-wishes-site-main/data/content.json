@@ -1,0 +1,156 @@
+{
+  "site": {
+    "title": "The Story of Us",
+    "description": "An interactive memory journey"
+  },
+  "hero": {
+    "loadingSteps": ["Loading...", "127 memories found.", "Ready when you are."],
+    "title": "The Story of Us",
+    "subtitle": "A cinematic, intimate launch-style experience built around our memories, whispered moments, and the best parts of being together.",
+    "audioSrc": "/audio/65-roses-hi-nanna.mp3",
+    "audioLabel": "Enjoy the music you love."
+  },
+  "story": {
+    "chapter": "Chapter 1",
+    "title": "Our Story",
+    "slides": [
+      { "title": "The Day We Met", "description": "A first smile that changed everything." },
+      { "title": "Late night calls", "description": "The nights we stayed up until sunrise." },
+      { "title": "First date", "description": "The night we went to the movies." },
+      { "title": "Our first trip", "description": "Every road led to us." }
+    ]
+  },
+  "timeline": {
+    "chapter": "Chapter 2",
+    "title": "Our Timeline",
+    "entries": [
+      {
+        "year": "2023",
+        "title": "We met",
+        "description": "A random moment turned into the start of everything.",
+        "photo": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "year": "2023",
+        "title": "First date",
+        "description": "Nervous laughs, easy conversation, and a night that didn't want to end.",
+        "photo": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "year": "2024",
+        "title": "First trip",
+        "description": "New places, same us. Somehow everything felt like home.",
+        "photo": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "year": "2024",
+        "title": "Late night calls",
+        "description": "Hours felt like minutes whenever your voice was on the other end.",
+        "photo": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "year": "Today",
+        "title": "Your birthday",
+        "description": "And here we are, still writing our story together.",
+        "photo": null
+      }
+    ]
+  },
+  "reasons": {
+    "chapter": "Chapter 3",
+    "title": "Reasons you're amazing",
+    "intro": "These are the moments, details and feelings that make our story feel unforgettable.",
+    "items": [
+      {
+        "title": "Your laugh lights the room",
+        "description": "Every moment with you feels brighter, softer, and more alive. That joy is magnetic and unforgettable.",
+        "tag": "Warmth"
+      },
+      {
+        "title": "Your quiet strength",
+        "description": "You carry the room with calm confidence, and that gentle courage makes everything feel safe and cherished.",
+        "tag": "Strength"
+      },
+      {
+        "title": "The way you see me",
+        "description": "You always notice the small, beautiful details. You make ordinary days feel extraordinary.",
+        "tag": "Attention to detail"
+      },
+      {
+        "title": "The way you make me feel",
+        "description": "You make me feel like I'm the only person in the world.",
+        "tag": "Love"
+      }
+    ]
+  },
+  "gallery": {
+    "chapter": "Chapter 4",
+    "title": "Memory Gallery",
+    "photos": [
+      {
+        "title": "Late night city lights",
+        "caption": "That night when the world felt endless.",
+        "src": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "title": "Cozy coffee mornings",
+        "caption": "Soft light, warm smiles, and easy conversation.",
+        "src": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "title": "Sunset escape",
+        "caption": "A golden drive with the windows down.",
+        "src": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "title": "Beautiful you",
+        "caption": "Beautiful you, my love",
+        "src": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
+      }
+    ]
+  },
+  "voice": {
+    "chapter": "Chapter 5",
+    "title": "This is for you",
+    "intro": "Press play to hear a message from me.",
+    "caption": "Happy Birthday my love ❤️",
+    "audioSrc": "/audio/just_the_way_you_are.mp3"
+  },
+  "gift": {
+    "chapter": "Chapter 6",
+    "title": "Open the gift",
+    "intro": "Tap the box, watch the lid lift, and read what's inside.",
+    "buttonLabel": "Open the gift",
+    "buttonLabelOpening": "Opening...",
+    "buttonLabelOpened": "Opened",
+    "tapToOpenLabel": "Tap to open",
+    "letterText": "Dear you,\n\nThis letter has been waiting inside a little box until the perfect moment. Every memory with you feels like a page in our story. I love the way you laugh, the way your hand fits mine, and the way the world feels softer when you're near.\n\nHappy Birthday. This is for you.\n\nLove, me ❤️"
+  },
+  "cake": {
+    "chapter": "Chapter 7",
+    "title": "Blow out the candles",
+    "image": "/photos/cake.jpg",
+    "intro": "Make a wish, then blow into your mic — or tap the button if you'd rather not.",
+    "micButtonLabel": "Allow microphone",
+    "blowButtonLabel": "Blow Candles",
+    "listeningLabel": "Listening... or tap here",
+    "blownLabel": "Candles out",
+    "micDeniedText": "Mic unavailable, no problem — the button works too.",
+    "wishText": "Wish granted. Let the celebration sparkle around you."
+  },
+  "ending": {
+    "title": "Happy Birthday",
+    "line1": "Thank you for existing.",
+    "line2": "See you soon. Love you."
+  },
+  "easterEggs": {
+    "moonMessage": "Even on the nights we couldn't talk, I'd look at the moon knowing you were somewhere looking at it too.",
+    "heartNote": "You found the hidden note. This one's simple: I'm endlessly grateful for you.",
+    "hintPrompt": "There are a couple of secrets hiding on this page.",
+    "hintMoon": "There's something glowing in the corner of the sky — try tapping it.",
+    "hintHeart": "Hold me a little longer... my heart gets squeezed whenever you're near.",
+    "hintOneMore": "Nice! There's one more secret waiting to be found.",
+    "hintAwesome": "Awesome, you found them both! ❤️",
+    "hintWaitingLabel": "Go find it!"
+  }
+}

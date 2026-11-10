@@ -1,0 +1,635 @@
+# Birthday website: consolidated audit and creative direction
+
+After reviewing the supplied material, my recommendation is to build A Little Universe for Saiswetha as a single, guided birthday experience—not as a conventional scrolling landing page and not as six projects stitched together.
+
+The strongest overall direction is:
+
+Cinematic opening → relationship nostalgia → playful interactions → personal voice → surprise reveal → birthday celebration → emotional finale.
+
+The most important architectural decision is to have one central experience controller, one visual design system, and one source of personal content. Each chapter should feel like part of the same story.
+
+I also found a few things worth deliberately not carrying forward: multiple overlapping story sections, excessive floating animations, a second gallery disguised as a 3D carousel, unnecessary authentication, and a heavy 3D cake implementation. More features would not necessarily make the gift more memorable.
+
+## 1. What each ZIP contributes
+
+I reviewed the project manifests, READMEs, folder structures, configuration files, and key React components.
+
+| Project             | Best contribution                                                       | Final decision                     |
+| ------------------- | ----------------------------------------------------------------------- | ---------------------------------- |
+| Birthday Bloom      | Cinematic scene transitions, SVG cake, gallery, celebration effects     | Use selected interaction patterns  |
+| ForeverCard         | Guided screen progression, progress indicators, Polaroid design, letter | Use its storytelling approach      |
+| The Story of Us     | Centralized JSON, reusable chapters, shared audio management            | Use its architecture concepts      |
+| Happy Birthday Love | Flip cards, quiz, photo gallery, timeline, cake finale                  | Reimplement selected components    |
+| A Little Surprise   | Envelope, bouquet, petals, balloons, gift reveal, sound effects         | Use selected visual interactions   |
+| Birthday Main       | Simple opening screen, music, personal letter                           | Reference only; don't use its code |
+
+### The important improvements
+
+1\. Eliminate duplicate storytelling.
+
+The Story of Us has a separate story carousel, timeline, and photo gallery. These can become repetitive.
+
+Our version uses one chronological relationship timeline and one separate photograph scrapbook.
+
+2\. Eliminate feature overload.
+
+I would not combine the balloon game, 3D image ring, secret vault, multiple quizzes, selfie camera, and several different particle systems.
+
+Instead, every chapter gets one meaningful purpose.
+
+3\. Choose lightweight implementations.
+
+Use SVG and CSS for the cake, envelopes, gift boxes, and constellation. Use Framer Motion for meaningful transitions. Avoid introducing Three.js simply to make a cake look impressive.
+
+4\. Create one shared audio system.
+
+The background music should have one controller. When she plays your voice recording, background music should pause or become quieter, then restore its previous state.
+
+5\. Make personalization exceptionally easy.
+
+All photographs, text, dates, memories, music paths, quiz questions, and gift messages should be managed through one typed configuration file.
+
+### A licensing detail worth knowing
+
+Birthday Bloom and Happy Birthday Love include MIT licenses. ForeverCard describes itself as available for personal reference and learning. The other three archives do not include standard license files.
+
+The final instructions therefore direct Antigravity to independently implement the ideas and avoid copying unlicensed source code or bundled photographs and music.
+
+## 2. The final experience I recommend
+
+THE COMPLETE EXPERIENCE
+
+# A Little Universe for Saiswetha
+
+An interactive birthday story, created by Bharath.
+
+1. The Secret Entrance
+
+   A midnight scene, animated envelope, her name and a surprise reveal.
+2. Happy Birthday, Saiswetha
+
+   A short cinematic birthday introduction.
+3. The Story of Us
+
+   An interactive timeline featuring July 7, 2025 and a live relationship counter.
+4. Our Little Scrapbook
+
+   Personal photographs, Polaroid cards, captions and a fullscreen gallery.
+5. 12 Little Reasons
+
+   Interactive cards revealing personal reasons you love her.
+6. How Well Do You Know Us?
+
+   A fun, affectionate relationship quiz.
+7. A Message From Bharath
+
+   A personal voice recording with a beautiful audio player.
+8. The Mystery Gift
+
+   An animated gift box with a personalized reveal.
+9. Make a Wish, Chellam!
+
+   Interactive birthday cake, candle extinguishing and confetti.
+10. Our Little Universe
+
+    An emotional final letter surrounded by a constellation of personal memories.
+
+## The visual identity
+
+Midnight · Ivory · Muted Rose · Champagne · Rosewood
+
+Cinematic midnight scenes combined with warm paper textures, elegant serif typography, delicate animations and a premium scrapbook aesthetic.
+
+The birthday configuration will already include the known dates:
+
+- Birthday: November 11, 2026.
+- Relationship anniversary: July 7, 2025.
+- Recipient: Saiswetha.
+- Sender: Bharath.
+- Nicknames: Panda kutti, Chellam.
+
+Unknown memories, dates and personal stories are deliberately left editable rather than fabricated.
+
+## 3. Download the deliverables
+
+Antigravity master prompt
+
+Complete implementation specification · Markdown · approximately 4,100 words
+
+Main file
+
+Download the complete master prompt
+
+ZIP source audit
+
+Detailed findings, strengths, exclusions, dependencies and licensing decisions for all six projects.
+
+Download the ZIP analysis
+
+The audit is based on source inspection; I haven't installed and executed all six projects, so I am not claiming runtime verification of their original demos.
+
+## 4. Complete master prompt — ready for Antigravity
+
+The following is the complete build specification. Open your intended workspace in Antigravity, switch to Agent mode, and give it this prompt together with the reference ZIPs.
+
+# MASTER BUILD PROMPT — A LITTLE UNIVERSE FOR SAISWETHA
+
+## Role and mission
+
+Act as a senior creative frontend engineer, product designer, interaction designer, accessibility specialist, and QA engineer. Build a complete, polished, production-ready birthday experience called **A Little Universe for Saiswetha**.
+
+This is not a generic birthday template and not a collage of unrelated demos. It should feel like one lovingly art-directed digital gift: a cinematic opening, a personal relationship scrapbook, a few playful interactions, a birthday celebration, and an intimate final letter. Every screen and interaction must belong to the same visual and emotional world.
+
+**Build the working application in the current workspace. Do not stop at a plan, wireframe, or partial mock-up.** First inspect the workspace and the supplied ZIP projects, then make an implementation plan internally, implement the experience, test it, and document how to personalize and deploy it.
+
+## 1. Personal details and factual boundaries
+
+Use these known details:
+
+- Recipient: **Saiswetha**
+- Sender: **Bharath**
+- Birthday: **November 11, 2026**
+- Official relationship date: **July 7, 2025**
+- Affectionate names that may be used naturally: **Panda kutti**, **Chellam**, and **my favourite person**
+- Site title: **A Little Universe for Saiswetha**
+
+Use these facts accurately. Do not invent her age, other dates, first-meeting details, first-date details, first kiss date, locations, conversations, inside jokes, promises, photos, or events. The relationship date is the only confirmed dated milestone. Leave all other milestone content editable and clearly marked for Bharath to fill in.
+
+Use warm, natural, personal language. Do not make every sentence overly poetic or repeat the same compliment in different words. Use the affectionate names sparingly so they feel meaningful rather than like decoration.
+
+The birthday date and relationship start date must live in configuration, not be scattered through components. Do not hardcode an age or calculate one from missing data.
+
+## 2. Inspect and learn from the supplied ZIP projects
+
+If the supplied ZIP files are present in the workspace, inspect their READMEs, manifests, source structure, major components, and relevant interaction code. Treat them as **reference material**, not as directories to merge wholesale. Do not run unknown scripts from the archives. Do not overwrite or mutate the original archives.
+
+Record a short `SOURCE_REVIEW.md` describing what was retained, adapted, or rejected. Use the following review as the intended direction:
+
+- **A Little Surprise** — borrow the simple staged journey, bouquet/petal flourish, envelope and gift reveal, candle interaction, swipeable moments, and contextual sound effects. Do not reproduce its many separate screens just because they exist; use only the ideas that support the final narrative.
+- **Birthday Bloom** — borrow the cinematic scene/state progression, controlled reveal pacing, responsive photo treatment, SVG-based cake/celebration concepts, and attention to reduced motion and testing. Do not bring across the large environment-variable engine, multilingual/family-template system, extensive particle layers, URL personalization machinery, or Three.js/React Three Fiber cake stack.
+- **birthday-wishes-site / The Story of Us** — borrow its strongest architectural idea: content separated from components, reusable chapter components, a shared audio controller, voice-message audio ducking, scroll reveals, and the gift-to-letter reveal. Do not bring across Next.js middleware, API routes, session cookies, server-side password protection, or its duplicate story/timeline/gallery structures. This project explicitly needs a static frontend.
+- **ForeverCard** — borrow the clear five-screen guided-flow idea, subtle progress dots, personal quiz reactions, Polaroid captions, smooth scene transitions, and paper-like final letter. Do not use the cursor/finger-dodging “No” button, camera/selfie capture, unnecessary export tools, or its sample relationship data. Its README describes the project as personal reference and learning material; do not copy its source code or assets.
+- **Happy-Birthday-Love** — borrow modular component thinking, flip cards, a concise quiz, photo lightbox behavior, timeline patterns, and a deliberate cake finale. Do not carry over the giant UI dependency set, 3D image ring, multiple overlapping games, secret vault, analytics, or claims that client-side image blocking/passwords make content secure.
+- **birthday-main** — treat only as a reference for a minimal HTML/CSS/JS greeting and letter reveal. Do not reuse its files: the archive contains one-byte photo/audio placeholders, duplicated music assets, and an unstructured single-page implementation.
+
+Licensing matters. The supplied Birthday Bloom and Happy-Birthday-Love archives include MIT licenses. The other archives do not include a standard open-source license file; ForeverCard says it is for personal reference and learning. Prefer independently writing clean implementations of the ideas. Do not copy code or bundled photos, songs, illustrations, or fonts from the archives into the final website unless their rights and license explicitly permit that use. Preserve notices if any MIT-licensed code is intentionally reused. Use Bharath's own photos and audio only.
+
+## 3. Hard technical constraints
+
+The final site must be **frontend-only and statically deployable**.
+
+Preferred stack:
+
+- React with Vite
+- TypeScript
+- Tailwind CSS if already configured; otherwise use a small, consistent CSS design system with CSS variables
+- Framer Motion (or the already-installed compatible Motion package; do not install both)
+- Lucide React icons
+- `canvas-confetti` only for intentional celebration moments
+- Native HTML Audio API for background music and voice playback
+- CSS transforms and SVG for envelopes, cards, cake details, stars, and the constellation
+
+Before changing dependencies, inspect `package.json` and the existing setup. Reuse compatible dependencies. Avoid unnecessary upgrades or framework migrations.
+
+**Do not add or use:** Firebase, Firestore, Supabase, Cloudinary, databases, Express, API routes, server actions, serverless functions, authentication services, OAuth, external AI APIs, analytics, tracking pixels, or a backend of any kind. Do not use Next.js for this project. Do not require environment secrets. Do not upload personal photos or audio to third-party services.
+
+A client-side passcode is not real security because the content and static assets are delivered to the browser. Do not describe a frontend-only gate as secure. Prefer the envelope interaction instead of a password gate. If a playful question is used, make it optional and do not block access permanently.
+
+## 4. Product structure and narrative flow
+
+Use one coherent experience shell with four top-level phases:
+
+1. `cover` — the secret envelope introduction.
+2. `birthday-intro` — the birthday greeting reveal.
+3. `chapters` — the central guided story, presented as one elegant single-page experience with scrollable chapters.
+4. `finale` — the final letter and memory-universe epilogue.
+
+The middle of the experience should flow vertically and naturally. Add a discreet chapter-progress indicator and clear “Continue” actions so she can follow the intended sequence. She must also be able to scroll freely, revisit completed sections, and use a small chapter navigator without getting trapped. Do not make every section a separate route or build two competing navigation systems. Avoid forced scroll snapping.
+
+### Chapter 1 — The secret envelope
+
+Create a full-screen midnight opening scene with restrained stars, fine dust, a soft vignette, and one elegant envelope in the centre. Add a wax-seal or heart detail, a gentle glow, and Saiswetha's name.
+
+Suggested copy:
+
+> A little something for someone very special...
+
+> Made with love, just for you.
+
+Primary action: **Open your surprise**.
+
+On tap/click, animate the seal and envelope opening, reveal a warm light, and transition smoothly into the birthday introduction. The opening must work with a tap and keyboard activation. Do not autoplay audio before this user gesture.
+
+### Chapter 2 — The birthday reveal
+
+Create a cinematic, short birthday introduction. Keep it emotionally clear and concise rather than a long sequence of timed paragraphs. Reveal:
+
+- “Today is all about you.”
+- “Happy Birthday, Saiswetha.”
+- A short line from Bharath, configurable in the content file.
+
+Use one strong visual moment, a restrained entrance animation, and one obvious action to continue. A real photograph may be used if one is supplied and configured; otherwise use typography and atmospheric lighting, not generic stock-couple imagery.
+
+### Chapter 3 — Our story: one relationship timeline
+
+Build one chronological timeline that combines the “Our Story” and “Timeline” ideas. Do **not** create a separate story carousel with duplicate milestones.
+
+Each timeline item supports an optional date, title, personal description, photo, and small label. Give the confirmed milestone special emphasis:
+
+- **July 7, 2025 — The Day We Became Us**
+
+Leave all other milestones as editable examples/placeholders. Do not invent the first meeting, first date, first kiss date, or other personal events.
+
+Add a compact counter titled **“Time since we became us”**, calculated dynamically from `2025-07-07`. Use a date-only calculation that avoids UTC/time-zone off-by-one errors. A clean days/months/years display is preferable to a noisy seconds ticker. The counter must never use a manually hardcoded elapsed value.
+
+### Chapter 4 — Our memories: Polaroid scrapbook
+
+Create a distinct visual photo-gallery chapter. The timeline tells the chronological story; this gallery is for browsing photographs. Do not repeat the timeline as another gallery of milestone cards.
+
+Design a tactile scrapbook with varied but balanced Polaroid sizes, subtle rotations, warm paper edges, natural shadows, short handwritten-style captions, and a few taped-corner details. Keep the composition curated rather than randomly scattered.
+
+Interactions:
+
+- Tap/click a photo to open a proper lightbox.
+- Lightbox supports previous/next, close button, Escape key, and swipe on touch devices.
+- Show its caption and optional date.
+- Disable background scrolling while the lightbox is open and return focus sensibly when closed.
+- Use hover tilt only on pointer/fine devices; do not make hover necessary for mobile use.
+
+Use only supplied personal photographs. Preserve the real people and original faces exactly as photographed. Do not AI-regenerate, beautify, morph, swap, or otherwise change facial identity or facial features. Do not use sample repository photos as substitutes. If there are no configured photos, show a refined “memories will go here” state during development; do not show fake photographs or fabricated captions in the finished experience.
+
+### Chapter 5 — Twelve little reasons
+
+Create up to 12 interactive flip cards titled **“A Few Little Things I Love About You”** (or configurable equivalent). Use a responsive grid with a tactile 3D flip on click/tap. Each card has a concise title on the front and a unique, personal explanation on the back.
+
+Possible editable titles: Your Smile, Your Voice, Your Expressions, Your Cute Anger, The Way You Talk, Your Little Habits, Your Laugh, Your Kindness, Your Randomness, Your Hugs, Your Presence, and Simply Being You.
+
+Do not fill missing backs with repetitive generic compliments. Keep each card's content editable. Support keyboard activation and a visible focus state. On mobile, tapping should flip the card; do not rely on hover.
+
+### Chapter 6 — A small “How well do you know us?” quiz
+
+Create one concise relationship quiz with approximately five questions. Questions, options, correct answers, reaction copy, and explanations must be data-driven. One question may use the known official relationship date, July 7, 2025. Leave unknown answers for Bharath to customize.
+
+The quiz is playful, never a test of affection. No matter the score, the final feedback must be positive and affectionate. Use light progress feedback and a graceful result screen. Do not include a forced or humiliating “wrong” state. Do not add a second balloon-popping or trivia game elsewhere.
+
+### Chapter 7 — A voice message from Bharath (optional)
+
+If `voiceMessage.audioSrc` is configured and the file exists, show a refined audio-player chapter inspired by a cassette/vinyl recorder. Include play/pause, progress, duration, volume/mute, replay, and an optional transcript. A simple animated waveform is enough; do not build an audio visualizer that consumes excessive CPU.
+
+If there is no recording, hide this chapter cleanly rather than rendering a broken or empty player. The voice recording must never autoplay. When it plays, temporarily pause or lower the background music; when it ends, restore the previous music state only if background music had been playing.
+
+### Chapter 8 — The mystery gift
+
+Create one premium gift-box reveal with CSS 3D transforms: a closed box, ribbon, lid movement, a restrained burst of light/particles, and one configurable reveal. The revealed content may be a real gift note, date invitation, coupon, or personal promise supplied by Bharath.
+
+Do not invent a real-world gift or promise. Do not add a separate scratch-card system unless it is genuinely needed and works well on touch devices. The reveal must be accessible with a normal button.
+
+### Chapter 9 — Birthday cake celebration
+
+Create a beautiful lightweight cake using SVG/CSS rather than Three.js/WebGL. Use a small number of candles and subtle flame animation. Avoid showing a specific age unless the correct age is provided explicitly.
+
+Sequence: cake appears → candles glow → “Make a wish, Chellam!” (configurable) → she presses **Blow out the candles** → flames extinguish → one tasteful confetti/firework burst → a short birthday message appears.
+
+A microphone-blow option is optional only. Ask for microphone permission after she explicitly selects that option, explain why, handle denial gracefully, stop all tracks and close the audio context when finished, and always retain the button as the reliable fallback. Do not make microphone access a requirement.
+
+### Finale — The final letter inside our little universe
+
+Make this the emotional high point. Combine the letter and constellation ideas into one integrated final scene rather than introducing several unrelated finales.
+
+The scene opens with a warm paper envelope or folded letter against a midnight sky. When opened, the letter unfolds onto an ivory paper surface. Reveal paragraphs at a comfortable pace, with a **Read the whole letter** control so she never has to wait through a typewriter effect. Use a handwritten-style signature:
+
+> With all my love,\
+> Bharath 🤍
+
+In the surrounding night sky, show a subtle constellation with a small number of interactive stars. Each configured star can reveal one short, real memory or note. Use a subtle heart-shaped arrangement if it looks elegant; avoid a large cartoon heart. If there are no configured star memories, keep the constellation decorative and do not fabricate notes.
+
+Final copy should include:
+
+> Happy Birthday, my Saiswetha.
+
+> Your Panda kutti. Your Chellam. My favourite person. 🤍
+
+> Made with love, by Bharath.
+
+Provide **Replay the experience**. Optionally provide a native Share action with clipboard fallback, but do not add social tracking or analytics.
+
+## 5. Visual direction: Midnight Editorial Scrapbook
+
+The visual language should feel premium, intimate, cinematic, and tactile. Avoid the usual over-decorated pink birthday-template look.
+
+Use this palette as the starting point:
+
+- Midnight: `#17151B`
+- Warm ivory: `#F5F0E8`
+- Muted rose: `#A96E78`
+- Champagne: `#D9B887`
+- Rosewood: `#55414C`
+
+Use CSS custom properties so the palette is adjustable in one place. Midnight scenes should frame the entrance and finale; warm ivory/paper scenes should carry the scrapbook and letter. Rose and champagne are accents, not full-page fills. Maintain readable contrast.
+
+Typography:
+
+- Editorial headings: Cormorant Garamond or Playfair Display
+- Body: Manrope or DM Sans
+- Small handwritten accents: Caveat
+
+Use elegant responsive type scales, intentional line lengths, consistent spacing, and generous whitespace. Do not use script fonts for long body copy. Provide sensible fallbacks if web fonts fail to load.
+
+Atmosphere and details:
+
+- very subtle film grain
+- soft vignette and gentle radial light
+- a few slow-moving stars/dust particles
+- natural image treatments and paper texture
+- subtle parallax only where it adds depth
+- smooth transitions between dark and warm chapters
+- restrained shadows and occasional soft glass surfaces
+
+Avoid neon, rainbow gradients, excessive blur, glossy plastic-looking cards, thick glowing borders, random emoji confetti throughout the page, constant fireworks, or floating hearts on every section. Use the same border radii, button styles, text hierarchy, icon style, and motion language throughout.
+
+## 6. Interaction, state, and navigation architecture
+
+Create a small, understandable top-level experience state machine. Use React state or a reducer; do not introduce a global state library unless the current project already relies on one for a good reason.
+
+Keep chapter components independent and reusable. Use local state for local interactions, shared state only for experience progress and audio. Each chapter must have a clear title, content, one primary action, and a consistent transition pattern.
+
+Navigation requirements:
+
+- discreet progress indicator with current chapter and completed progress
+- “Continue” actions that scroll to the next chapter smoothly
+- a compact way to revisit chapters after the entrance is complete
+- a skip-intro option that does not skip the personal story or letter
+- replay that resets all chapter interactions and scroll position
+- no dead links or decorative buttons that do nothing
+- no surprise auto-advance while she is reading or interacting
+
+Do not force a timed typewriter sequence for every paragraph. Never make a user wait to read a personal message. Animations should invite interaction, not hold the content hostage.
+
+## 7. Centralized content and asset configuration
+
+All personal content must be editable in one typed file, preferably:
+
+`src/data/birthdayContent.ts`
+
+Create TypeScript interfaces for the configuration. Suggested shape (adapt it if the codebase needs a better structure):
+
+```
+export const birthdayContent = {
+  site: {
+    title: "A Little Universe for Saiswetha",
+    recipientName: "Saiswetha",
+    senderName: "Bharath",
+    birthdayDate: "2026-11-11",
+    relationshipStartDate: "2025-07-07",
+    showRelationshipCounter: true,
+  },
+  entrance: {
+    eyebrow: "A little something for someone special",
+    title: "Made with love, just for you.",
+    buttonLabel: "Open your surprise",
+  },
+  intro: {
+    title: "Happy Birthday, Saiswetha",
+    message: "[Personal birthday message from Bharath]",
+    image: "",
+  },
+  timeline: [
+    {
+      id: "official-day",
+      date: "2025-07-07",
+      title: "The Day We Became Us",
+      description: "[Write the memory in your own words]",
+      image: "",
+    },
+  ],
+  memories: [],
+  reasons: [],
+  quiz: [],
+  voiceMessage: {
+    enabled: false,
+    audioSrc: "",
+    transcript: "",
+  },
+  music: {
+    enabled: false,
+    audioSrc: "",
+    label: "A song for you",
+  },
+  gift: {
+    enabled: true,
+    title: "A little surprise",
+    message: "[Describe the real gift or promise]",
+  },
+  cake: {
+    enabled: true,
+    message: "Make a wish, Chellam!",
+    finalMessage: "[Birthday message]",
+  },
+  letter: {
+    paragraphs: ["[Write the letter in Bharath's own words]"],
+    signature: "With all my love, Bharath 🤍",
+  },
+  constellation: {
+    memories: [],
+  },
+} as const;
+```
+
+Do not copy this example literally where its placeholders would appear to the recipient. Use it as the schema guide. Build robust optional-content handling: empty `memories`, `reasons`, `quiz`, voice, or constellation entries must not crash the site or render broken cards. Hide optional chapters when their required content is missing, or show a tasteful development-only empty state that is not visible in the production build.
+
+Use a central asset structure such as:
+
+```
+public/
+  images/
+    hero/
+    timeline/
+    gallery/
+    letter/
+  audio/
+    background-music.mp3
+    voice-message.mp3
+```
+
+Reference assets with stable local paths. Validate that configured files exist. Add descriptive alt text. Use image dimensions/aspect ratios to prevent layout shift. Use lazy loading for below-the-fold photos. Do not hotlink external images or audio.
+
+## 8. Audio management
+
+Use one shared audio controller so the same background track is not instantiated by multiple components. Browsers commonly require a real user gesture before audio can start; start music only from the envelope-open or explicit music-play action.
+
+Requirements:
+
+- visible play/pause and mute controls
+- optional volume control
+- gentle volume fade, not sudden blasting
+- no forced autoplay
+- background music remains off if no file is configured
+- voice-message playback pauses or ducks background music
+- restore the prior music state after voice playback ends
+- handle unsupported formats and load errors gracefully
+- clean up audio references and event listeners on unmount
+
+Sound effects are optional and should be short and quiet. Never make an audio cue necessary to understand an interaction.
+
+## 9. Responsive, accessible, and performant implementation
+
+Mobile is the primary target. Design and test at 360px, 390px, and 430px widths, then tablet, 1366px laptop, and wide desktop.
+
+Mobile requirements:
+
+- no horizontal overflow
+- readable type and comfortable line lengths
+- touch targets around 44px or larger
+- no hover-only controls
+- gallery/lightbox swipe support
+- responsive timeline and flip-card grid
+- floating controls kept away from browser safe areas
+- no heavy background effects that hurt scrolling
+
+Accessibility:
+
+- semantic landmarks and headings in a logical order
+- visible keyboard focus
+- keyboard-operable buttons/cards
+- accessible names for icon-only controls
+- proper dialog/lightbox focus handling and Escape behavior
+- reduced-motion support via `prefers-reduced-motion`
+- adequate contrast and readable text sizes
+- never rely on color or sound alone to communicate state
+- microphone permission must be opt-in only
+
+Performance:
+
+- prefer CSS/SVG over WebGL for decorative scenes
+- lazy-load gallery images
+- use transforms/opacity for animations
+- keep particle counts low and stop animation when off-screen where practical
+- clean up timers, listeners, observers, animation frames, media streams, and audio objects
+- avoid unnecessary dependencies and repeated component state
+- provide graceful fallbacks if motion or audio fails
+
+## 10. Project organization
+
+Use a clean structure similar to this, adapted to the actual project rather than creating empty abstractions:
+
+```
+src/
+  components/
+    experience/
+      ExperienceShell.tsx
+      ChapterProgress.tsx
+      ChapterSection.tsx
+    entrance/
+      EnvelopeIntro.tsx
+      BirthdayReveal.tsx
+    story/
+      RelationshipTimeline.tsx
+    gallery/
+      MemoryGallery.tsx
+      PolaroidCard.tsx
+      Lightbox.tsx
+    reasons/
+      ReasonsGrid.tsx
+      FlipCard.tsx
+    quiz/
+      RelationshipQuiz.tsx
+    audio/
+      AudioController.tsx
+      VoiceMessage.tsx
+    gift/
+      MysteryGift.tsx
+    birthday/
+      BirthdayCake.tsx
+      Celebration.tsx
+    finale/
+      FinalLetter.tsx
+      MemoryConstellation.tsx
+    ui/
+      Button.tsx
+      IconButton.tsx
+      SectionHeading.tsx
+  data/
+    birthdayContent.ts
+  hooks/
+  lib/
+    audio.ts
+    dateUtils.ts
+  styles/
+    theme.css
+    animations.css
+  App.tsx
+  main.tsx
+public/
+  images/
+  audio/
+```
+
+Use a reusable design system, not a giant generic component library. Keep components focused and avoid abstractions that make the site harder to edit tomorrow.
+
+## 11. Build and deployment
+
+The finished app must run as a static Vite frontend and deploy to Vercel without a server runtime. Do not add API endpoints, middleware, server-only environment variables, database setup, or external services.
+
+Provide a short `README.md` explaining:
+
+1. how to run the project locally
+2. where to add/replace photographs
+3. where to add background music and a voice recording
+4. how to edit the timeline, quiz, reasons, gift, and final letter in `birthdayContent.ts`
+5. how to build and deploy to Vercel
+6. which optional chapters are hidden when content is not configured
+
+If using client-side routing, configure the static-host fallback only if needed. A single-page scroll experience should not need a router.
+
+## 12. Required implementation workflow
+
+Follow this order:
+
+1. **Inspect** the current workspace, source archives, `package.json`, scripts, installed dependencies, and existing app entry points.
+2. **Review** the reference projects and create `SOURCE_REVIEW.md` with keep/adapt/skip decisions. Do not merge project roots or copy bundled sample media.
+3. **Plan** the chapter hierarchy, visual system, content schema, and component boundaries before coding.
+4. **Build the design system**: palette, typography, spacing, buttons, cards, paper surfaces, and motion rules.
+5. **Implement the full narrative flow** and all configured interactions.
+6. **Populate only confirmed personal details** and leave clearly labelled editable placeholders for missing personal material.
+7. **Test** the full experience on mobile and desktop, including the empty optional-content states.
+8. **Polish** timing, transitions, focus states, performance, and image presentation.
+9. **Document** how Bharath can change content and deploy the project.
+
+Do not report a feature as complete unless its interaction works. Do not leave TODO buttons, placeholder links, fake photos, or non-functional controls in the production experience.
+
+## 13. Definition of done
+
+The project is finished only when all applicable checks pass:
+
+- Envelope entrance opens and transitions correctly.
+- Birthday reveal is responsive and readable.
+- Timeline shows the confirmed July 7, 2025 milestone and safely handles editable additional entries.
+- Relationship counter calculates correctly from the configured date.
+- Gallery lightbox opens, closes, navigates, and works on touch and keyboard.
+- Flip cards work by tap/click and keyboard.
+- Quiz validates answers and always ends positively.
+- Missing optional voice/audio assets do not break the site.
+- Background audio only starts after user action and has working controls.
+- Gift reveal works once and displays configured content.
+- Cake candles can be extinguished without microphone permission; confetti triggers once.
+- Final letter can be read immediately without waiting for a typing animation.
+- Constellation only reveals configured memories.
+- Replay resets the experience correctly.
+- No horizontal overflow at 360px, 390px, or 430px.
+- All images and audio paths resolve; no broken assets.
+- Reduced-motion mode is respected.
+- No console errors, broken imports, TypeScript errors, or production build errors remain.
+- No backend/database/auth/analytics service has been introduced.
+- Vercel static deployment is documented and buildable.
+
+Run the existing scripts where available (`lint`, `typecheck`, `test`, `build`). Fix failures caused by this implementation. If the project has no tests, add a small set of meaningful checks for the relationship date calculation, chapter progression, quiz completion, audio state, and optional content handling.
+
+## Final creative instruction
+
+Make the experience feel as though Bharath has carefully arranged a small universe of memories for Saiswetha. The opening should create curiosity; the timeline and photographs should create nostalgia; the cards and quiz should create playful smiles; the voice and letter should feel intimate; the gift and cake should create celebration; and the final constellation should leave her with one clear feeling: this was made for her, by someone who remembers the little things.
+
+Choose restraint over feature count. Make every interaction purposeful. Make the entire site feel like one premium, finished product.
+
+**Build the complete working website now.**
+
+My final recommendation: Don't spend time adding more features after this. The real magic will come from your actual photos, your own voice recording, and the letter written in your own words. Those three things will make this feel like your birthday gift rather than an impressive website template. 🤍&#x20;

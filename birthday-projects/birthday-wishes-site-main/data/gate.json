@@ -1,0 +1,9 @@
+{
+  "title": "This one's just for you",
+  "subtitle": "Enter the password to keep reading.",
+  "placeholder": "Password",
+  "unlockLabel": "Unlock",
+  "wrongMessage": "Not quite. Try again.",
+  "hintButtonLabel": "Need a hint?",
+  "hints": ["Bro, try first 8 numbers"]
+}
