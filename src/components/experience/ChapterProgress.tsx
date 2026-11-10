@@ -128,4 +128,3 @@ export const ChapterProgress: React.FC<ChapterProgressProps> = ({
     </>
   );
 };
-

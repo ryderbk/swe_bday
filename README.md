@@ -4,18 +4,21 @@ An intimate, art-directed interactive birthday experience created with love by *
 
 ---
 
-## 🌟 The 10-Chapter Experience Flow
+## 🌟 The Connected Narrative Flow
 
 1. **The Secret Entrance**: A midnight opening scene with an animated wax-sealed envelope that opens on click/tap, initializing the ambient music experience via a real user gesture.
-2. **Happy Birthday, Saiswetha**: A cinematic introduction celebrating her special day.
-3. **The Story of Us**: A chronological relationship timeline with special emphasis on **July 7, 2025 (The Day We Became Us)** and a dynamic live counter calculating exact elapsed years, months, and days.
-4. **Our Little Scrapbook**: Tactile Polaroid memories with handwritten captions, washi-tape accents, and a full-featured lightbox (supporting touch swipe, keyboard navigation, and scroll-lock).
-5. **12 Little Reasons**: Interactive 3D flip cards sharing twelve personal things Bharath loves about her.
-6. **How Well Do You Know Us?**: A sweet, affectionate 5-question relationship quiz with positive-only celebrations.
-7. **A Voice Message From Bharath**: A vintage cassette player with spinning spools, animated waveform, progress controls, transcript drawer, and automatic background music ducking.
-8. **The Mystery Gift**: A 3D wrapped gift box with ribbon and bow that unties and lifts its lid to reveal a personal promise note.
-9. **Make a Wish, Chellam!**: An artisanal SVG birthday cake with glowing flickers. She can blow out the candles via button or optional microphone detection, triggering celebratory confetti.
-10. **Our Little Universe & The Final Letter**: A warm unfolding letter against a starlit sky, accompanied by an interactive memory constellation. Concludes with the personal message:
+2. **Cinematic Chat Prelude**: A smartphone-framed messaging prelude with typing indicators and delayed bubble entrances.
+3. **Happy Birthday Reveal**: Cinematic birthday typography combined with the charming bunny-and-bear birthday artwork.
+4. **A Bouquet For You**: Red rose bouquet with couple silhouettes and drifting petals.
+5. **Pop a Balloon, Find a Memory**: Interactive mini-game featuring 15 balloons, progress counter, pop sounds, and personal secret notes.
+6. **The Story of Us**: Chronological relationship timeline with special emphasis on **July 7, 2025 (The Day We Became Us)** and a dynamic live counter.
+7. **Our Little Scrapbook**: Tactile 4-Polaroid default gallery with an interactive **"View All Memories In A Heart ❤️"** button that smoothly transforms into a 13-photo heart collage with a full-featured lightbox.
+8. **12 Little Reasons**: Interactive 3D flip cards sharing twelve personal things Bharath loves about her.
+9. **One Little Question**: Romantic affirmative question (*"Would you choose me all over again? ❤️"* with *"YES, A THOUSAND TIMES! 🥰 ✨"*).
+10. **A Voice Message From Bharath (Optional)**: Vintage cassette player with spinning spools, progress controls, and automatic background music ducking.
+11. **The Mystery Gift**: Champagne and rose-gold gift box artwork that unties and opens to reveal your personal promise note.
+12. **Make a Wish, Chellam!**: Artisanal SVG birthday cake with glowing flickers, candle-blow detection, and a grand Canvas 2D fireworks celebration.
+13. **Our Little Universe & The Final Letter**: Warm unfolding parchment letter and starlit memory constellation concluding with:
     > *Happy Birthday, my Saiswetha.*  
     > *Your Panda kutti. Your Chellam. My favourite person. 🤍*  
     > *Made with love, by Bharath.*
@@ -55,62 +58,30 @@ npm run build
 
 ## 📝 How to Personalize the Content
 
-All personal text, dates, memories, quiz questions, and secrets are managed in a single, typed file:
+All personal text, dates, memories, balloon messages, and secrets are managed in a single, typed file:  
 📁 `src/data/birthdayContent.ts`
 
 ### 1. Adding / Replacing Photographs
-- Place your image files inside:
-  - `public/images/gallery/` (for Polaroid scrapbook photos)
-  - `public/images/timeline/` (for optional milestone pictures)
-- In `src/data/birthdayContent.ts`, update the `memories` array:
-  ```typescript
-  {
-    id: "memory-1",
-    title: "Pure Joy",
-    caption: "Your smile that lights up everything around you.",
-    date: "July 2025",
-    image: "/images/gallery/photo1.jpg",
-    orientation: "portrait",
-    rotation: -2,
-  }
-  ```
-- *Note:* If photos are missing or empty, the gallery displays an elegant development placeholder and will never crash.
+- Place your image files inside `public/images/gallery/` (`photo1.jpg`, `photo2.jpg`, etc.).
+- Update the `memories` array in `src/data/birthdayContent.ts`.
+- The first 4 appear in the default view; clicking **"View All Memories In A Heart ❤️"** arranges all 13 photos into a heart shape.
 
 ### 2. Adding Background Music & Voice Recording
 - Place your audio files inside `public/audio/`:
-  - `public/audio/background-music.mp3` (romantic background melody)
-  - `public/audio/voice-message.mp3` (Bharath's personal voice note)
+  - `public/audio/background-music.mp3`
+  - `public/audio/voice-message.mp3`
 - In `src/data/birthdayContent.ts`:
-  - Enable music: `music.enabled: true`
-  - Enable voice note: `voiceMessage.enabled: true`, specify `audioSrc`, and optionally paste the transcript in `voiceMessage.transcript`.
+  - Set `music.enabled: true` to enable background melody.
+  - Set `voiceMessage.enabled: true` to show the cassette player.
 
-### 3. Editing Timeline Milestones
-- The confirmed milestone (**July 7, 2025 — The Day We Became Us**) is already set and highlighted with special badges.
-- You can customize additional memories, trips, or inside moments by editing `timeline` in `src/data/birthdayContent.ts`.
+### 3. Balloon Mini-Game Notes
+- Customize the 15 secret messages under `balloonGame.balloons` in `src/data/birthdayContent.ts`.
 
-### 4. Customizing the 12 Reasons
-- Edit the `reasons` list in `src/data/birthdayContent.ts`. You can change titles, card numbers, and the heartfelt messages revealed on the back of each card.
-
-### 5. Customizing the Quiz
-- Edit `quiz` in `src/data/birthdayContent.ts`. Customize questions, choices, `correctIndex`, and the affectionate explanation displayed upon answer.
-
-### 6. Customizing the Mystery Gift & Cake
-- In `gift`: change `title`, `revealTitle`, and `message` to your real gift, date invitation, or secret promise.
-- In `cake`: change `message` or `finalMessage`.
-
-### 7. Editing the Final Letter & Constellation
-- In `letter`: add or edit the paragraphs written in your own words.
-- In `constellation`: add interactive memory stars with customized x/y positions and short notes.
-
----
-
-## 👁️ Optional Content & Graceful Hiding
-
-The application is engineered with defensive rendering:
-- **Voice Message chapter**: Automatically hidden if `voiceMessage.enabled: false` or if `voiceMessage.audioSrc` fails to load.
-- **Background Music**: Remains completely silent and unobtrusive if no audio file is provided. Never blocks interaction.
-- **Microphone Blowing**: Completely optional. Candle extinguishing always works reliably with the tap/click button.
-- **Empty Scrapbook / Constellation**: Gracefully renders tasteful fallbacks without console errors or broken layouts.
+### 4. Editing the Timeline, Gift & Final Letter
+- Milestone **July 7, 2025** is highlighted automatically.
+- Edit `gift.message` for your personal gift or date invitation.
+- Edit `letter.paragraphs` to speak directly from your heart.
+- Edit `constellation.memories` to customize the notes hidden inside the stars.
 
 ---
 
@@ -118,16 +89,8 @@ The application is engineered with defensive rendering:
 
 This project is a 100% static React + Vite application with zero server runtime, zero database, and zero secrets required.
 
-### Quick Deploy via Vercel CLI:
+### Deploy via Vercel CLI:
 ```bash
 npx vercel
 ```
-
-### Deploy via GitHub / Vercel Dashboard:
-1. Push your repository to GitHub / GitLab.
-2. In Vercel, click **Add New Project** and import your repository.
-3. Vercel will automatically detect the **Vite** framework preset:
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Click **Deploy**. Your custom birthday website will be live in seconds with HTTPS!
-
+Or import into Vercel dashboard: preset **Vite**, build command `npm run build`, output directory `dist`.

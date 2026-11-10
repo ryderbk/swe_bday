@@ -44,21 +44,21 @@ export const FinalLetter: React.FC<FinalLetterProps> = ({
       try {
         await navigator.share(shareData);
       } catch {
-        // Share dismissed
+        // Dismissed
       }
     } else {
       try {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
-      } catch (err) {
-        console.warn('Clipboard write failed:', err);
+      } catch {
+        // Fallback
       }
     }
   };
 
   return (
-    <section id="finale" className="relative py-20 px-4 sm:px-6 max-w-4xl mx-auto w-full flex flex-col items-center">
+    <div className="relative py-20 px-4 sm:px-6 max-w-4xl mx-auto w-full flex flex-col items-center">
       <SectionHeading
         eyebrow="From My Heart"
         title="Our Little Universe"
@@ -121,7 +121,7 @@ export const FinalLetter: React.FC<FinalLetterProps> = ({
         </div>
       </motion.div>
 
-      {/* Memory Constellation */}
+      {/* Redesigned Memory Constellation */}
       <MemoryConstellation
         title={constellation.title}
         subtitle={constellation.subtitle}
@@ -173,6 +173,6 @@ export const FinalLetter: React.FC<FinalLetterProps> = ({
           </Button>
         </div>
       </motion.div>
-    </section>
+    </div>
   );
 };

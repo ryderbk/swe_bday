@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mic, Wind, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { audioManager } from '../../lib/audio';
 import { SectionHeading } from '../ui/SectionHeading';
 import { Button } from '../ui/Button';
+import { GrandFireworksCanvas } from '../effects/GrandFireworksCanvas';
 
 interface BirthdayCakeProps {
   cake: {
@@ -21,6 +23,7 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
   if (!cake.enabled) return null;
 
   const [isExtinguished, setIsExtinguished] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
   const [isListeningMic, setIsListeningMic] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
 
@@ -54,12 +57,16 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
     if (isExtinguished) return;
     stopMicrophone();
     setIsExtinguished(true);
+    setShowFireworks(true);
+
+    // Play fireworks SFX
+    audioManager.playSFX('fireworkBurst');
 
     try {
-      // Tasteful confetti burst
+      // Confetti burst
       confetti({
-        particleCount: 65,
-        spread: 80,
+        particleCount: 80,
+        spread: 90,
         origin: { y: 0.6 },
         colors: ['#D9B887', '#A96E78', '#F5F0E8', '#FFD1DC', '#FAF7F2'],
         disableForReducedMotion: true,
@@ -77,7 +84,9 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
 
-      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const audioCtx = new AudioContextClass();
       audioContextRef.current = audioCtx;
 
@@ -100,7 +109,6 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
         }
         const average = sum / bufferLength;
 
-        // Threshold for detecting a breath/blow into the mic
         if (average > 48) {
           handleExtinguish();
           return;
@@ -110,8 +118,7 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
       };
 
       checkAudioLevel();
-    } catch (err) {
-      console.warn('Microphone permission denied or error:', err);
+    } catch {
       setMicError('Microphone access unavailable. Tap the button below to blow out candles!');
       stopMicrophone();
     }
@@ -119,11 +126,18 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
 
   const handleRelight = () => {
     setIsExtinguished(false);
+    setShowFireworks(false);
     setMicError(null);
   };
 
   return (
-    <section id="cake" className="relative py-20 px-4 sm:px-6 max-w-xl mx-auto w-full text-center">
+    <div className="relative py-20 px-4 sm:px-6 max-w-xl mx-auto w-full text-center">
+      {/* Project 4 Grand Fireworks Overlay */}
+      <GrandFireworksCanvas
+        active={showFireworks}
+        onFinish={() => setShowFireworks(false)}
+      />
+
       <SectionHeading
         eyebrow="Make A Wish"
         title={cake.title}
@@ -196,21 +210,17 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
             {/* Flames or Smoke */}
             {!isExtinguished ? (
               <g className="animate-flame">
-                {/* Flame 1 */}
                 <ellipse cx="109" cy="65" rx="5" ry="9" fill="#FFC845" filter="drop-shadow(0 0 6px #FFA500)" />
                 <ellipse cx="109" cy="66" rx="2.5" ry="5" fill="#FFF7CC" />
 
-                {/* Flame 2 (Center - taller) */}
                 <ellipse cx="150" cy="54" rx="6" ry="11" fill="#FFC845" filter="drop-shadow(0 0 8px #FFA500)" />
                 <ellipse cx="150" cy="55" rx="3" ry="6" fill="#FFF7CC" />
 
-                {/* Flame 3 */}
                 <ellipse cx="191" cy="65" rx="5" ry="9" fill="#FFC845" filter="drop-shadow(0 0 6px #FFA500)" />
                 <ellipse cx="191" cy="66" rx="2.5" ry="5" fill="#FFF7CC" />
               </g>
             ) : (
               <g className="animate-smoke">
-                {/* Gentle curling smoke */}
                 <path d="M109 70 Q106 60 112 50 Q116 42 110 35" stroke="rgba(245, 240, 232, 0.6)" strokeWidth="2" fill="none" strokeLinecap="round" />
                 <path d="M150 60 Q154 50 148 40 Q144 32 152 22" stroke="rgba(245, 240, 232, 0.7)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
                 <path d="M191 70 Q194 60 188 50 Q184 42 192 35" stroke="rgba(245, 240, 232, 0.6)" strokeWidth="2" fill="none" strokeLinecap="round" />
@@ -279,6 +289,6 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 };

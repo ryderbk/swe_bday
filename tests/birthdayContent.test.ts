@@ -19,14 +19,25 @@ describe('birthdayContent schema and configuration', () => {
     expect(officialMilestone?.title).toBe('The Day We Became Us');
   });
 
-  it('contains at least 5 playful quiz questions with valid correctIndex', () => {
-    expect(birthdayContent.quiz.length).toBeGreaterThanOrEqual(5);
-    birthdayContent.quiz.forEach((q) => {
-      expect(q.options.length).toBeGreaterThanOrEqual(2);
-      expect(q.correctIndex).toBeGreaterThanOrEqual(0);
-      expect(q.correctIndex).toBeLessThan(q.options.length);
-      expect(q.explanation.length).toBeGreaterThan(0);
-    });
+  it('verifies quiz is removed and romantic affirmative question is configured', () => {
+    expect((birthdayContent as Record<string, unknown>).quiz).toBeUndefined();
+    expect(birthdayContent.romanticQuestion.enabled).toBe(true);
+    expect(birthdayContent.romanticQuestion.title).toContain('choose me');
+    expect(birthdayContent.romanticQuestion.buttonLabel).toContain('YES');
+  });
+
+  it('has balloon game configured with 15 unique balloons', () => {
+    expect(birthdayContent.balloonGame.enabled).toBe(true);
+    expect(birthdayContent.balloonGame.balloons.length).toBe(15);
+    const balloonIds = birthdayContent.balloonGame.balloons.map((b) => b.id);
+    expect(new Set(balloonIds).size).toBe(15);
+  });
+
+  it('has bouquet and chat prelude configured', () => {
+    expect(birthdayContent.bouquet.enabled).toBe(true);
+    expect(birthdayContent.bouquet.imageSrc).toContain('bouquet.webp');
+    expect(birthdayContent.chatPrelude.enabled).toBe(true);
+    expect(birthdayContent.chatPrelude.messages.length).toBeGreaterThan(0);
   });
 
   it('has 12 unique reasons configured', () => {
@@ -35,9 +46,9 @@ describe('birthdayContent schema and configuration', () => {
     expect(new Set(numbers).size).toBe(12);
   });
 
-  it('handles optional voice message structure cleanly', () => {
-    expect(typeof birthdayContent.voiceMessage.enabled).toBe('boolean');
-    expect(typeof birthdayContent.voiceMessage.audioSrc).toBe('string');
+  it('handles gallery heart expansion configuration cleanly', () => {
+    expect(birthdayContent.galleryConfig.defaultPhotoCount).toBe(4);
+    expect(birthdayContent.memories.length).toBeGreaterThanOrEqual(4);
   });
 
   it('includes proper letter signature and affection lines', () => {
@@ -46,4 +57,3 @@ describe('birthdayContent schema and configuration', () => {
     expect(birthdayContent.letter.footerAffection).toContain('Chellam');
   });
 });
-

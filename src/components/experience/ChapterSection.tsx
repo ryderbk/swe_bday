@@ -25,7 +25,7 @@ export const ChapterSection: React.FC<ChapterSectionProps> = ({
   };
 
   return (
-    <div id={id} className={`relative w-full ${className}`}>
+    <section id={id} className={`relative w-full ${className}`}>
       {children}
 
       {nextSectionId && (
@@ -34,7 +34,7 @@ export const ChapterSection: React.FC<ChapterSectionProps> = ({
             type="button"
             onClick={handleScrollToNext}
             aria-label={`Scroll to ${nextSectionLabel || 'next chapter'}`}
-            className="group flex flex-col items-center gap-1 text-xs text-champagne/70 hover:text-champagne transition-colors focus:outline-none focus:ring-2 focus:ring-champagne rounded-full p-2"
+            className="group flex flex-col items-center gap-1 text-xs text-champagne/70 hover:text-champagne transition-colors focus:outline-none focus:ring-2 focus:ring-champagne rounded-full p-2 cursor-pointer"
           >
             {nextSectionLabel && (
               <span className="font-sans text-[11px] tracking-wider uppercase opacity-80 group-hover:opacity-100">
@@ -45,6 +45,6 @@ export const ChapterSection: React.FC<ChapterSectionProps> = ({
           </button>
         </div>
       )}
-    </div>
+    </section>
   );
 };

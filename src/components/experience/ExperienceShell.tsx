@@ -3,11 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BirthdayContent } from '../../data/birthdayContent';
 import { audioManager } from '../../lib/audio';
 import { EnvelopeIntro } from '../entrance/EnvelopeIntro';
+import { BirthdayChatPrelude } from '../prelude/BirthdayChatPrelude';
 import { BirthdayReveal } from '../entrance/BirthdayReveal';
+import { BouquetScene } from '../bouquet/BouquetScene';
+import { BalloonGame } from '../balloon/BalloonGame';
 import { RelationshipTimeline } from '../story/RelationshipTimeline';
 import { MemoryGallery } from '../gallery/MemoryGallery';
 import { ReasonsGrid } from '../reasons/ReasonsGrid';
-import { RelationshipQuiz } from '../quiz/RelationshipQuiz';
+import { RomanticQuestion } from '../question/RomanticQuestion';
 import { VoiceMessage } from '../audio/VoiceMessage';
 import { MysteryGift } from '../gift/MysteryGift';
 import { BirthdayCake } from '../birthday/BirthdayCake';
@@ -20,7 +23,7 @@ interface ExperienceShellProps {
   content: BirthdayContent;
 }
 
-export type ExperiencePhase = 'cover' | 'birthday-intro' | 'experience';
+export type ExperiencePhase = 'cover' | 'chat-prelude' | 'birthday-intro' | 'experience';
 
 export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => {
   const [phase, setPhase] = useState<ExperiencePhase>('cover');
@@ -36,10 +39,14 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
   }, [content.music]);
 
   const handleOpenEnvelope = () => {
-    // Start background music via user gesture
+    // Start background music via user gesture if enabled
     if (content.music.enabled) {
       audioManager.playBackground();
     }
+    setPhase('chat-prelude');
+  };
+
+  const handleCompleteChat = () => {
     setPhase('birthday-intro');
   };
 
@@ -53,14 +60,25 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  // Build chapter list for progress indicator
+  // Build centralized, typed chapter registry from enabled chapters
   const chapters: ChapterItem[] = useMemo(() => {
-    const list: ChapterItem[] = [
-      { id: 'story', title: 'The Story of Us', shortName: 'Story' },
-      { id: 'memories', title: 'Our Little Scrapbook', shortName: 'Scrapbook' },
-      { id: 'reasons', title: '12 Little Reasons', shortName: 'Reasons' },
-      { id: 'quiz', title: 'How Well Do You Know Us?', shortName: 'Quiz' },
-    ];
+    const list: ChapterItem[] = [];
+
+    if (content.bouquet.enabled) {
+      list.push({ id: 'bouquet', title: 'A Bouquet for You', shortName: 'Bouquet' });
+    }
+
+    if (content.balloonGame.enabled) {
+      list.push({ id: 'balloons', title: 'Pop a Balloon, Find a Memory', shortName: 'Balloons' });
+    }
+
+    list.push({ id: 'story', title: 'The Story of Us', shortName: 'Story' });
+    list.push({ id: 'memories', title: 'Our Little Scrapbook', shortName: 'Scrapbook' });
+    list.push({ id: 'reasons', title: '12 Little Reasons', shortName: 'Reasons' });
+
+    if (content.romanticQuestion.enabled) {
+      list.push({ id: 'question', title: 'One Little Question', shortName: 'Question' });
+    }
 
     if (content.voiceMessage.enabled && content.voiceMessage.audioSrc) {
       list.push({ id: 'voice', title: 'A Voice Note', shortName: 'Voice' });
@@ -79,9 +97,19 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
     return list;
   }, [content]);
 
+  // Helper to determine next chapter target from the registry
+  const getNextChapter = (currentId: string): ChapterItem | undefined => {
+    const idx = chapters.findIndex((c) => c.id === currentId);
+    if (idx !== -1 && idx < chapters.length - 1) {
+      return chapters[idx + 1];
+    }
+    return undefined;
+  };
+
   return (
     <div className="relative min-h-screen bg-midnight text-ivory selection:bg-rose-muted selection:text-white">
       <AnimatePresence mode="wait">
+        {/* Phase 1: Envelope Cover */}
         {phase === 'cover' && (
           <motion.div
             key="cover-phase"
@@ -103,11 +131,32 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
           </motion.div>
         )}
 
+        {/* Phase 2: Project 4 Scripted Smartphone Chat Prelude */}
+        {phase === 'chat-prelude' && (
+          <motion.div
+            key="chat-phase"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.8 }}
+            className="w-full"
+          >
+            <BirthdayChatPrelude
+              contactName={content.chatPrelude.contactName}
+              statusText={content.chatPrelude.statusText}
+              messages={content.chatPrelude.messages}
+              continueLabel={content.chatPrelude.continueLabel}
+              onComplete={handleCompleteChat}
+            />
+          </motion.div>
+        )}
+
+        {/* Phase 3: Project 2 Bunny+Bear Birthday Reveal */}
         {phase === 'birthday-intro' && (
           <motion.div
             key="intro-phase"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.8 }}
             className="w-full"
@@ -119,11 +168,13 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
               subtitle={content.intro.subtitle}
               message={content.intro.message}
               buttonLabel={content.intro.buttonLabel}
+              teddyImage={content.intro.teddyImage}
               onContinue={handleStartExperience}
             />
           </motion.div>
         )}
 
+        {/* Phase 4: Guided Ordered Chapters */}
         {phase === 'experience' && (
           <motion.div
             key="experience-phase"
@@ -132,17 +183,53 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
             transition={{ duration: 0.9 }}
             className="w-full relative"
           >
-            {/* Chapter Navigator and Progress Bar */}
+            {/* Top Chapter Progress & Quick Navigation */}
             <ChapterProgress chapters={chapters} onReplay={handleReplay} />
 
             {/* Persistent Audio Controls */}
             <AudioController />
 
-            {/* Chapter 3: Timeline & Relationship Counter */}
+            {/* Chapter: Bouquet Scene */}
+            {content.bouquet.enabled && (
+              <ChapterSection
+                id="bouquet"
+                nextSectionId={getNextChapter('bouquet')?.id}
+                nextSectionLabel={getNextChapter('bouquet')?.shortName}
+              >
+                <BouquetScene
+                  title={content.bouquet.title}
+                  subtitle={content.bouquet.subtitle}
+                  supportingMessage={content.bouquet.supportingMessage}
+                  imageSrc={content.bouquet.imageSrc}
+                  leftDecorationSrc={content.bouquet.leftDecorationSrc}
+                  rightDecorationSrc={content.bouquet.rightDecorationSrc}
+                  petalsEnabled={content.bouquet.petalsEnabled}
+                />
+              </ChapterSection>
+            )}
+
+            {/* Chapter: Balloon Mini-Game */}
+            {content.balloonGame.enabled && (
+              <ChapterSection
+                id="balloons"
+                nextSectionId={getNextChapter('balloons')?.id}
+                nextSectionLabel={getNextChapter('balloons')?.shortName}
+              >
+                <BalloonGame
+                  title={content.balloonGame.title}
+                  subtitle={content.balloonGame.subtitle}
+                  completionTitle={content.balloonGame.completionTitle}
+                  completionMessage={content.balloonGame.completionMessage}
+                  balloons={content.balloonGame.balloons}
+                />
+              </ChapterSection>
+            )}
+
+            {/* Chapter: Timeline & Relationship Counter */}
             <ChapterSection
               id="story"
-              nextSectionId="memories"
-              nextSectionLabel="Our Memories"
+              nextSectionId={getNextChapter('story')?.id}
+              nextSectionLabel={getNextChapter('story')?.shortName}
             >
               <RelationshipTimeline
                 milestones={content.timeline}
@@ -151,82 +238,83 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
               />
             </ChapterSection>
 
-            {/* Chapter 4: Polaroid Scrapbook */}
+            {/* Chapter: Polaroid Scrapbook & Heart Collage */}
             <ChapterSection
               id="memories"
-              nextSectionId="reasons"
-              nextSectionLabel="12 Little Reasons"
+              nextSectionId={getNextChapter('memories')?.id}
+              nextSectionLabel={getNextChapter('memories')?.shortName}
             >
-              <MemoryGallery memories={content.memories} />
+              <MemoryGallery
+                memories={content.memories}
+                defaultPhotoCount={content.galleryConfig.defaultPhotoCount}
+                expandedTitle={content.galleryConfig.expandedTitle}
+                expandedSubtitle={content.galleryConfig.expandedSubtitle}
+                viewAllLabel={content.galleryConfig.viewAllLabel}
+                showLessLabel={content.galleryConfig.showLessLabel}
+              />
             </ChapterSection>
 
-            {/* Chapter 5: 12 Little Reasons */}
+            {/* Chapter: 12 Little Reasons */}
             <ChapterSection
               id="reasons"
-              nextSectionId="quiz"
-              nextSectionLabel="Relationship Quiz"
+              nextSectionId={getNextChapter('reasons')?.id}
+              nextSectionLabel={getNextChapter('reasons')?.shortName}
             >
               <ReasonsGrid reasons={content.reasons} />
             </ChapterSection>
 
-            {/* Chapter 6: Relationship Quiz */}
-            <ChapterSection
-              id="quiz"
-              nextSectionId={
-                content.voiceMessage.enabled && content.voiceMessage.audioSrc
-                  ? 'voice'
-                  : content.gift.enabled
-                  ? 'gift'
-                  : 'cake'
-              }
-              nextSectionLabel={
-                content.voiceMessage.enabled && content.voiceMessage.audioSrc
-                  ? 'Voice Message'
-                  : content.gift.enabled
-                  ? 'Mystery Gift'
-                  : 'Birthday Cake'
-              }
-            >
-              <RelationshipQuiz
-                quiz={content.quiz}
-                recipientName={content.site.recipientName}
-              />
-            </ChapterSection>
+            {/* Chapter: Project 3 Romantic Yes Question */}
+            {content.romanticQuestion.enabled && (
+              <ChapterSection
+                id="question"
+                nextSectionId={getNextChapter('question')?.id}
+                nextSectionLabel={getNextChapter('question')?.shortName}
+              >
+                <RomanticQuestion
+                  title={content.romanticQuestion.title}
+                  subtitle={content.romanticQuestion.subtitle}
+                  buttonLabel={content.romanticQuestion.buttonLabel}
+                  helperText={content.romanticQuestion.helperText}
+                  revealedTitle={content.romanticQuestion.revealedTitle}
+                  revealedMessage={content.romanticQuestion.revealedMessage}
+                />
+              </ChapterSection>
+            )}
 
-            {/* Chapter 7: Voice Message (Optional) */}
+            {/* Chapter: Voice Message (Optional) */}
             {content.voiceMessage.enabled && content.voiceMessage.audioSrc && (
               <ChapterSection
                 id="voice"
-                nextSectionId={content.gift.enabled ? 'gift' : 'cake'}
-                nextSectionLabel={content.gift.enabled ? 'Mystery Gift' : 'Birthday Cake'}
+                nextSectionId={getNextChapter('voice')?.id}
+                nextSectionLabel={getNextChapter('voice')?.shortName}
               >
                 <VoiceMessage voiceMessage={content.voiceMessage} />
               </ChapterSection>
             )}
 
-            {/* Chapter 8: Mystery Gift */}
+            {/* Chapter: Mystery Gift */}
             {content.gift.enabled && (
               <ChapterSection
                 id="gift"
-                nextSectionId="cake"
-                nextSectionLabel="Birthday Cake"
+                nextSectionId={getNextChapter('gift')?.id}
+                nextSectionLabel={getNextChapter('gift')?.shortName}
               >
                 <MysteryGift gift={content.gift} />
               </ChapterSection>
             )}
 
-            {/* Chapter 9: Birthday Cake */}
+            {/* Chapter: Birthday Cake & Grand Celebration */}
             {content.cake.enabled && (
               <ChapterSection
                 id="cake"
-                nextSectionId="finale"
-                nextSectionLabel="Our Little Universe"
+                nextSectionId={getNextChapter('cake')?.id}
+                nextSectionLabel={getNextChapter('cake')?.shortName}
               >
                 <BirthdayCake cake={content.cake} recipientName={content.site.recipientName} />
               </ChapterSection>
             )}
 
-            {/* Chapter 10: Finale Letter & Constellation */}
+            {/* Chapter: Finale Letter & Starlit Constellation */}
             <ChapterSection id="finale">
               <FinalLetter
                 letter={content.letter}
@@ -242,4 +330,3 @@ export const ExperienceShell: React.FC<ExperienceShellProps> = ({ content }) => 
     </div>
   );
 };
-

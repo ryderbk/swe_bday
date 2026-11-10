@@ -21,7 +21,7 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
   }, [relationshipStartDate]);
 
   return (
-    <section id="story" className="relative py-20 px-4 sm:px-6 max-w-4xl mx-auto w-full">
+    <div className="relative py-20 px-4 sm:px-6 max-w-4xl mx-auto w-full">
       <SectionHeading
         eyebrow="Our Journey"
         title="The Story of Us"
@@ -178,7 +178,6 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
           );
         })}
       </div>
-    </section>
+    </div>
   );
 };
-
