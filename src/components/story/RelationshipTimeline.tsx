@@ -17,8 +17,6 @@ interface RelationshipTimelineProps {
 export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
   milestones,
   relationshipStartDate,
-  senderBirthDate = '2005-10-10',
-  recipientBirthDate = '2005-11-11',
   timeZone = 'Asia/Kolkata',
   showRelationshipCounter = true,
 }) => {
@@ -69,20 +67,6 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
             Since {formatReadableDate(relationshipStartDate)}
           </div>
 
-          {/* Three Special Repeating Dates */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs font-mono text-champagne/80 mb-6">
-            <span className="px-2.5 py-1 rounded-full bg-midnight/80 border border-champagne/20">
-              Bharath: {formatReadableDate(senderBirthDate)} (10/10)
-            </span>
-            <span className="text-rosewood/60">•</span>
-            <span className="px-2.5 py-1 rounded-full bg-midnight/80 border border-champagne/20">
-              Swethu: {formatReadableDate(recipientBirthDate)} (11/11)
-            </span>
-            <span className="text-rosewood/60">•</span>
-            <span className="px-2.5 py-1 rounded-full bg-rose-muted/20 text-champagne-light border border-champagne/30 font-semibold">
-              Us: 07/07/2025
-            </span>
-          </div>
 
           {/* Years / Months / Days row */}
           <div className="grid grid-cols-3 gap-2.5 sm:gap-4 max-w-sm mx-auto mb-3">

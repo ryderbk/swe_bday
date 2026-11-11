@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart } from 'lucide-react';
 
 interface Particle {
   x: number;
@@ -187,26 +186,14 @@ export const GrandBirthdayBlast: React.FC<GrandBirthdayBlastProps> = ({ active }
         className="absolute inset-0 w-full h-full pointer-events-none"
       />
 
-      {/* Central Glowing Heart */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: [1, 1.15, 1] }}
-        transition={{
-          opacity: { duration: 0.8 },
-          scale: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-        }}
-        className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-rose-muted/20 border border-champagne/40 flex items-center justify-center mb-6 shadow-[0_0_35px_rgba(217,184,135,0.4)]"
-      >
-        <Heart className="w-10 h-10 sm:w-12 sm:h-12 fill-champagne text-champagne drop-shadow-md" />
-      </motion.div>
-
       {/* Grand Birthday Message Typography */}
-      <div className="relative z-10 text-center px-4 max-w-4xl flex flex-col items-center justify-center">
+      <div className="relative z-10 text-center px-4 w-full flex flex-col items-center justify-center">
         <motion.h1
           initial={{ opacity: 0, scale: 0.85, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
-          className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory tracking-wide drop-shadow-[0_0_30px_rgba(217,184,135,0.6)] leading-tight uppercase"
+          className="font-serif font-light text-ivory tracking-wide drop-shadow-[0_0_30px_rgba(217,184,135,0.6)] uppercase whitespace-nowrap"
+          style={{ fontSize: 'clamp(1.4rem, 5.5vw, 5rem)' }}
         >
           HAPPYY BIRTHDAYY BANGARAM
         </motion.h1>
