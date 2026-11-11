@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MemoryPhoto } from '../../data/birthdayContent';
 import { IconButton } from '../ui/IconButton';
 
@@ -27,7 +27,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
     if (currentIndex > 0) {
       onNavigate(currentIndex - 1);
     } else {
-      onNavigate(photos.length - 1); // Loop around
+      onNavigate(photos.length - 1);
     }
   }, [currentIndex, photos.length, onNavigate]);
 
@@ -35,7 +35,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
     if (currentIndex < photos.length - 1) {
       onNavigate(currentIndex + 1);
     } else {
-      onNavigate(0); // Loop around
+      onNavigate(0);
     }
   }, [currentIndex, photos.length, onNavigate]);
 
@@ -74,7 +74,6 @@ export const Lightbox: React.FC<LightboxProps> = ({
     const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
     const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
 
-    // Ensure horizontal swipe is dominant
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 45) {
       if (diffX > 0) {
         handlePrev();
@@ -155,36 +154,18 @@ export const Lightbox: React.FC<LightboxProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="relative bg-[#FAF7F2] p-3 sm:p-5 pb-6 sm:pb-8 rounded-sm shadow-2xl max-w-full text-center"
+            className="relative bg-[#FAF7F2] p-3 sm:p-5 pb-5 sm:pb-6 rounded-sm shadow-2xl max-w-full text-center"
           >
             {/* Image */}
-            <div className="relative max-h-[60vh] overflow-hidden rounded-xs bg-midnight/5">
+            <div className="relative max-h-[70vh] overflow-hidden rounded-xs bg-midnight/5">
               <img
                 src={currentPhoto.image}
-                alt={currentPhoto.title || currentPhoto.caption}
-                className="max-h-[60vh] w-auto max-w-full object-contain mx-auto"
+                alt="Memory photograph"
+                className="max-h-[70vh] w-auto max-w-full object-contain mx-auto"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
-            </div>
-
-            {/* Caption */}
-            <div className="mt-4 px-2">
-              {currentPhoto.title && (
-                <h4 className="font-serif text-xl sm:text-2xl text-midnight font-normal mb-1">
-                  {currentPhoto.title}
-                </h4>
-              )}
-              <p className="font-handwriting text-xl sm:text-2xl text-rosewood-dark">
-                {currentPhoto.caption}
-              </p>
-              {currentPhoto.date && (
-                <span className="inline-flex items-center gap-1 font-mono text-xs text-rosewood/70 mt-2">
-                  <Calendar className="w-3 h-3" />
-                  {currentPhoto.date}
-                </span>
-              )}
             </div>
           </motion.div>
         </div>
@@ -192,4 +173,3 @@ export const Lightbox: React.FC<LightboxProps> = ({
     </AnimatePresence>
   );
 };
-

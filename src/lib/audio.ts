@@ -88,6 +88,14 @@ class AudioManager {
       this.bgAudio.loop = true;
       this.bgAudio.volume = this.isMuted ? 0 : this.volume;
 
+      // Explicit loop fallback ensuring track loops forever
+      this.bgAudio.addEventListener('ended', () => {
+        if (this.bgAudio) {
+          this.bgAudio.currentTime = 0;
+          this.bgAudio.play().catch(() => {});
+        }
+      });
+
       this.bgAudio.addEventListener('play', () => {
         this.state.isPlaying = true;
         this.notify();

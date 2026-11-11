@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Calendar, Sparkles, Clock } from 'lucide-react';
 import { TimelineMilestone } from '../../data/birthdayContent';
@@ -16,9 +16,23 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
   relationshipStartDate,
   showRelationshipCounter = true,
 }) => {
-  const duration = useMemo(() => {
-    return calculateRelationshipTime(relationshipStartDate);
+  const [duration, setDuration] = useState(() =>
+    calculateRelationshipTime(relationshipStartDate)
+  );
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Real-time counter — ticks every second
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setDuration(calculateRelationshipTime(relationshipStartDate));
+    }, 1000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [relationshipStartDate]);
+
+  const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
     <div className="relative py-20 px-4 sm:px-6 max-w-4xl mx-auto w-full">
@@ -29,7 +43,7 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
         theme="dark"
       />
 
-      {/* Dynamic Relationship Counter */}
+      {/* Real-Time Relationship Counter */}
       {showRelationshipCounter && (
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -44,11 +58,12 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
             <span>Time Since We Became Us</span>
           </div>
 
-          <div className="font-serif text-2xl sm:text-3xl text-ivory font-light mb-4">
+          <div className="font-serif text-2xl sm:text-3xl text-ivory font-light mb-6">
             Since {formatReadableDate(relationshipStartDate)}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-lg mx-auto">
+          {/* Years / Months / Days row */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-sm mx-auto mb-4">
             <div className="p-3 sm:p-4 rounded-xl bg-midnight/80 border border-champagne/15 flex flex-col items-center">
               <span className="font-serif text-3xl sm:text-4xl text-champagne font-medium">
                 {duration.years}
@@ -75,19 +90,44 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
                 {duration.days === 1 ? 'Day' : 'Days'}
               </span>
             </div>
+          </div>
 
-            <div className="p-3 sm:p-4 rounded-xl bg-midnight/80 border border-champagne/15 flex flex-col items-center">
-              <span className="font-serif text-3xl sm:text-4xl text-rose-soft font-medium">
-                {duration.totalDays}
+          {/* Hours / Minutes / Seconds row */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-sm mx-auto mb-4">
+            <div className="p-2 sm:p-3 rounded-xl bg-midnight/60 border border-rose-muted/20 flex flex-col items-center">
+              <span className="font-mono text-2xl sm:text-3xl text-rose-soft font-medium tabular-nums">
+                {pad(duration.hours)}
               </span>
-              <span className="text-xs text-ivory-dark/70 uppercase tracking-wider mt-1">
-                Total Days
+              <span className="text-[10px] text-ivory-dark/60 uppercase tracking-wider mt-1">
+                Hours
+              </span>
+            </div>
+
+            <div className="p-2 sm:p-3 rounded-xl bg-midnight/60 border border-rose-muted/20 flex flex-col items-center">
+              <span className="font-mono text-2xl sm:text-3xl text-rose-soft font-medium tabular-nums">
+                {pad(duration.minutes)}
+              </span>
+              <span className="text-[10px] text-ivory-dark/60 uppercase tracking-wider mt-1">
+                Minutes
+              </span>
+            </div>
+
+            <div className="p-2 sm:p-3 rounded-xl bg-midnight/60 border border-rose-muted/20 flex flex-col items-center">
+              <span className="font-mono text-2xl sm:text-3xl text-rose-soft font-medium tabular-nums">
+                {pad(duration.seconds)}
+              </span>
+              <span className="text-[10px] text-ivory-dark/60 uppercase tracking-wider mt-1">
+                Seconds
               </span>
             </div>
           </div>
 
-          <p className="mt-4 font-handwriting text-base sm:text-lg text-champagne/80">
-            ...and every single day is my favourite day with you.
+          <p className="font-mono text-xs text-champagne/60 tracking-wider mt-2">
+            {duration.totalDays.toLocaleString()} total days together
+          </p>
+
+          <p className="mt-3 font-handwriting text-base sm:text-lg text-champagne/80">
+            ...and every second becomes another memory.
           </p>
         </motion.div>
       )}
@@ -162,17 +202,6 @@ export const RelationshipTimeline: React.FC<RelationshipTimelineProps> = ({
                 <p className="font-sans text-sm sm:text-base text-ivory-dark/80 leading-relaxed font-light">
                   {milestone.description}
                 </p>
-
-                {milestone.image && (
-                  <div className="mt-4 rounded-xl overflow-hidden border border-white/10 max-w-sm">
-                    <img
-                      src={milestone.image}
-                      alt={milestone.title}
-                      loading="lazy"
-                      className="w-full h-48 object-cover"
-                    />
-                  </div>
-                )}
               </div>
             </motion.div>
           );

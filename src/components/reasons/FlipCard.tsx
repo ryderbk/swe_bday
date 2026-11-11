@@ -28,10 +28,12 @@ export const FlipCard: React.FC<FlipCardProps> = ({ reason }) => {
       aria-pressed={isFlipped}
       onClick={handleToggle}
       onKeyDown={handleKeyDown}
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
       className="perspective-1000 group w-full h-56 sm:h-64 cursor-pointer focus:outline-none focus:ring-2 focus:ring-champagne focus:ring-offset-2 focus:ring-offset-midnight rounded-2xl select-none"
     >
       <div
-        className={`relative w-full h-full transition-transform duration-600 preserve-3d rounded-2xl ${
+        className={`relative w-full h-full transition-transform duration-500 preserve-3d rounded-2xl ${
           isFlipped ? 'rotate-y-180' : ''
         }`}
       >
@@ -52,7 +54,8 @@ export const FlipCard: React.FC<FlipCardProps> = ({ reason }) => {
 
           <div className="flex items-center justify-center gap-1.5 text-[11px] text-ivory-dark/60 font-sans tracking-wider uppercase">
             <RotateCw className="w-3 h-3 text-champagne/70" />
-            <span>Tap to reveal</span>
+            <span className="hidden sm:inline">Hover to reveal</span>
+            <span className="sm:hidden">Tap to reveal</span>
           </div>
         </div>
 
@@ -73,11 +76,11 @@ export const FlipCard: React.FC<FlipCardProps> = ({ reason }) => {
 
           <div className="flex items-center justify-center gap-1 text-[11px] text-rosewood/70 font-sans tracking-wider uppercase">
             <RotateCw className="w-3 h-3 text-rose-muted" />
-            <span>Tap to flip back</span>
+            <span className="hidden sm:inline">Move away to flip back</span>
+            <span className="sm:hidden">Tap to flip back</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
-

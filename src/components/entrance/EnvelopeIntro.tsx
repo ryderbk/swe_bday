@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Heart } from 'lucide-react';
 import { BackgroundDust } from '../ui/BackgroundDust';
 import { Button } from '../ui/Button';
+import { enterFullscreen } from '../../lib/fullscreen';
 
 interface EnvelopeIntroProps {
   onOpen: () => void;
@@ -28,10 +29,12 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
   const handleOpen = () => {
     if (isOpen) return;
     setIsOpen(true);
-    // Smooth transition delay for envelope opening animation
-    setTimeout(() => {
-      onOpen();
-    }, 1500);
+
+    // Enter fullscreen immediately on user gesture
+    enterFullscreen();
+
+    // Trigger onOpen (which plays audio & advances phase)
+    onOpen();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -71,7 +74,7 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
           {subtext}
         </p>
 
-        {/* Dedicated Responsive Envelope Stage with ample headroom for the emerging letter */}
+        {/* Envelope Stage */}
         <div
           role="button"
           tabIndex={0}
@@ -92,12 +95,12 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
             {/* LAYER 1 (z-0): Back Interior of Envelope */}
             <div className="absolute inset-0 bg-[#251f2b] rounded-xl border border-champagne/30 overflow-hidden" />
 
-            {/* LAYER 2 (z-10): The Letter Sheet - starts completely inside, slides upward smoothly */}
+            {/* LAYER 2 (z-10): The Letter Sheet - hidden when closed, emerges when opened */}
             <motion.div
               initial={false}
               animate={{
                 y: isOpen ? -85 : 0,
-                opacity: isOpen ? 1 : 0.85,
+                opacity: isOpen ? 1 : 0,
                 scale: isOpen ? 1.04 : 0.96,
               }}
               transition={{ duration: 0.9, delay: isOpen ? 0.35 : 0, ease: 'easeOut' }}
@@ -115,28 +118,25 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
               </span>
             </motion.div>
 
-            {/* LAYER 3 (z-20): Left & Right & Bottom Front Pockets (keeps lower half of letter tucked inside) */}
+            {/* LAYER 3 (z-20): Left & Right & Bottom Front Pockets */}
             <svg
               className="absolute inset-0 w-full h-full z-20 pointer-events-none"
               viewBox="0 0 320 208"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Bottom pocket flap */}
               <path
                 d="M0 208 L160 115 L320 208 Z"
                 fill="#2c2434"
                 stroke="rgba(217, 184, 135, 0.3)"
                 strokeWidth="1.2"
               />
-              {/* Left fold */}
               <path
                 d="M0 0 L160 115 L0 208 Z"
                 fill="#221b29"
                 stroke="rgba(217, 184, 135, 0.25)"
                 strokeWidth="1"
               />
-              {/* Right fold */}
               <path
                 d="M320 0 L160 115 L320 208 Z"
                 fill="#241d2b"
@@ -170,7 +170,7 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
               </svg>
             </motion.div>
 
-            {/* LAYER 5 (z-40): Wax Seal (centered over closed flaps, fades on open) */}
+            {/* LAYER 5 (z-40): Wax Seal */}
             <AnimatePresence>
               {!isOpen && (
                 <motion.div
@@ -212,10 +212,6 @@ export const EnvelopeIntro: React.FC<EnvelopeIntroProps> = ({
             {buttonLabel}
           </Button>
         </div>
-
-        <p className="mt-4 font-handwriting text-lg text-champagne/70">
-          To {recipientName} · From {senderName}
-        </p>
       </motion.div>
     </div>
   );

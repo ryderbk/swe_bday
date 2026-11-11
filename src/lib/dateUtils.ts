@@ -2,6 +2,9 @@ export interface RelationshipDuration {
   years: number;
   months: number;
   days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
   totalDays: number;
   formattedText: string;
 }
@@ -20,7 +23,7 @@ export function parseDateParts(dateStr: string): [number, number, number] {
 
 /**
  * Calculates calendar difference and total days between start date and target date.
- * Strictly date-only arithmetic without timezone off-by-one anomalies.
+ * Includes real-time hours, minutes, seconds from elapsed time.
  */
 export function calculateRelationshipTime(
   startDateStr: string,
@@ -32,21 +35,31 @@ export function calculateRelationshipTime(
   const curMonth = targetDate.getMonth() + 1; // 1-indexed
   const curDay = targetDate.getDate();
 
-  // Total elapsed full days using UTC timestamps
-  const startUtc = Date.UTC(startYear, startMonth - 1, startDay);
-  const curUtc = Date.UTC(curYear, curMonth - 1, curDay);
-  const diffMs = curUtc - startUtc;
-  const totalDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+  // Total elapsed milliseconds (using local time for start date midnight)
+  const startMs = new Date(startYear, startMonth - 1, startDay, 0, 0, 0, 0).getTime();
+  const curMs = targetDate.getTime();
+  const diffMs = curMs - startMs;
 
   if (diffMs <= 0) {
     return {
       years: 0,
       months: 0,
       days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
       totalDays: 0,
-      formattedText: "The beginning of our journey",
+      formattedText: 'The beginning of our journey',
     };
   }
+
+  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  // Real-time sub-day components from remainder
+  const remainderMs = diffMs % (1000 * 60 * 60 * 24);
+  const hours = Math.floor(remainderMs / (1000 * 60 * 60));
+  const minutes = Math.floor((remainderMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((remainderMs % (1000 * 60)) / 1000);
 
   // Calculate calendar years, months, days
   let years = curYear - startYear;
@@ -55,7 +68,6 @@ export function calculateRelationshipTime(
 
   if (days < 0) {
     months -= 1;
-    // Days in previous month
     const prevMonthDays = new Date(curYear, curMonth - 1, 0).getDate();
     days += prevMonthDays;
   }
@@ -74,6 +86,9 @@ export function calculateRelationshipTime(
     years: Math.max(0, years),
     months: Math.max(0, months),
     days: Math.max(0, days),
+    hours,
+    minutes,
+    seconds,
     totalDays,
     formattedText: parts.join(', '),
   };
@@ -92,4 +107,3 @@ export function formatReadableDate(dateStr: string): string {
   const monthName = monthNames[month - 1] || '';
   return `${monthName} ${day}, ${year}`;
 }
-

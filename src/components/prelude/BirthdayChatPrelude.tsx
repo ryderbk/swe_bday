@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Heart } from 'lucide-react';
 import { ChatMessage } from '../../data/birthdayContent';
-import { audioManager } from '../../lib/audio';
 import { Button } from '../ui/Button';
 
 interface BirthdayChatPreludeProps {
@@ -22,25 +21,47 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
 }) => {
   const [visibleCount, setVisibleCount] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
+  const timerRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const onCompleteCalled = useRef(false);
+
+  const clearAllTimers = () => {
+    timerRefs.current.forEach((t) => clearTimeout(t));
+    timerRefs.current = [];
+  };
 
   useEffect(() => {
     if (visibleCount < messages.length) {
       const nextMessage = messages[visibleCount];
-      const timer = setTimeout(() => {
+      const t1 = setTimeout(() => {
         setIsTyping(true);
-        audioManager.playSFX('typing');
-        const showTimer = setTimeout(() => {
+        const t2 = setTimeout(() => {
           setVisibleCount((prev) => prev + 1);
           setIsTyping(false);
-        }, 700);
-        return () => clearTimeout(showTimer);
+        }, 500);
+        timerRefs.current.push(t2);
       }, nextMessage.delayMs);
+      timerRefs.current.push(t1);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearAllTimers();
+      };
     } else {
       setIsTyping(false);
     }
   }, [visibleCount, messages]);
+
+  const handleSkip = () => {
+    clearAllTimers();
+    setVisibleCount(messages.length);
+    setIsTyping(false);
+  };
+
+  const handleFinish = () => {
+    if (onCompleteCalled.current) return;
+    onCompleteCalled.current = true;
+    clearAllTimers();
+    onComplete();
+  };
 
   const allShown = visibleCount >= messages.length;
 
@@ -121,7 +142,7 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
             )}
           </div>
 
-          {/* Bottom Decorative Input Bar / Continue Bar */}
+          {/* Bottom Decorative Input Bar */}
           <div className="bg-[#241F2F] p-3 border-t border-champagne/15 flex items-center gap-2">
             <div className="flex-1 bg-[#1A1622] rounded-full px-4 py-2 text-xs text-ivory-dark/60 font-sans truncate">
               Special message for you...
@@ -132,7 +153,7 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
           </div>
         </div>
 
-        {/* Action Button - Appears when messages complete */}
+        {/* Action Button */}
         <div className="mt-8 flex justify-center w-full">
           <AnimatePresence>
             {allShown ? (
@@ -144,7 +165,7 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
                 <Button
                   variant="gold"
                   size="lg"
-                  onClick={onComplete}
+                  onClick={handleFinish}
                   icon={<ArrowRight className="w-4 h-4 text-midnight" />}
                   iconPosition="right"
                 >
@@ -154,10 +175,10 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
             ) : (
               <button
                 type="button"
-                onClick={onComplete}
-                className="text-xs text-champagne/60 hover:text-champagne font-sans transition-colors py-2"
+                onClick={handleSkip}
+                className="text-xs text-champagne/60 hover:text-champagne font-sans transition-colors py-2 cursor-pointer"
               >
-                Skip chat &rarr;
+                Skip chat →
               </button>
             )}
           </AnimatePresence>
@@ -166,4 +187,3 @@ export const BirthdayChatPrelude: React.FC<BirthdayChatPreludeProps> = ({
     </div>
   );
 };
-

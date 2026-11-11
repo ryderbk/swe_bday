@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { Sparkles, RotateCcw, X } from 'lucide-react';
 import { BalloonItem } from '../../data/birthdayContent';
 import { audioManager } from '../../lib/audio';
 import { SectionHeading } from '../ui/SectionHeading';
@@ -29,12 +29,14 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
   balloons,
 }) => {
   const [poppedSet, setPoppedSet] = useState<Set<string>>(new Set());
-  const [activeNote, setActiveNote] = useState<BalloonItem | null>(null);
+  const [revealedId, setRevealedId] = useState<string | null>(null);
 
   const handlePop = (balloon: BalloonItem) => {
-    if (poppedSet.has(balloon.id)) return;
+    if (poppedSet.has(balloon.id)) {
+      setRevealedId(balloon.id);
+      return;
+    }
 
-    // Pop sound
     audioManager.playSFX('balloonPop');
 
     setPoppedSet((prev) => {
@@ -43,12 +45,12 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
       return next;
     });
 
-    setActiveNote(balloon);
+    setRevealedId(balloon.id);
   };
 
   const handleReset = () => {
     setPoppedSet(new Set());
-    setActiveNote(null);
+    setRevealedId(null);
   };
 
   const isAllPopped = balloons.length > 0 && poppedSet.size === balloons.length;
@@ -62,24 +64,21 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
         theme="dark"
       />
 
-      {/* Progress pill */}
-      <div className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full bg-midnight-surface/80 border border-champagne/30 text-xs font-mono text-champagne backdrop-blur-md">
-        <span>Balloons Popped:</span>
-        <span className="font-bold text-white">
-          {poppedSet.size} / {balloons.length}
-        </span>
-      </div>
-
-      {/* Balloon Grid Stage */}
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-6 w-full max-w-4xl py-4 place-items-center">
+      {/* Balloon Grid Stage: 3 cols mobile, 5 cols desktop */}
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 sm:gap-6 w-full max-w-4xl py-6 place-items-center">
         {balloons.map((b, idx) => {
           const isPopped = poppedSet.has(b.id);
+          const isRevealed = revealedId === b.id;
           const imgSrc = BALLOON_IMAGES[b.color] || BALLOON_IMAGES.gold;
+
+          // Subtle varying scale and float delay
+          const floatDelay = (idx * 0.3) % 2;
+          const floatDuration = 3 + (idx % 3) * 0.5;
 
           return (
             <div
               key={b.id}
-              className="relative w-24 sm:w-28 h-32 sm:h-36 flex flex-col items-center justify-center"
+              className="relative w-24 sm:w-32 h-36 sm:h-44 flex flex-col items-center justify-center"
             >
               <AnimatePresence mode="wait">
                 {!isPopped ? (
@@ -91,19 +90,19 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
                     animate={{
                       scale: 1,
                       opacity: 1,
-                      y: [0, -6, 0],
+                      y: [0, -8, 0],
                     }}
                     exit={{
-                      scale: [1, 1.35, 0],
+                      scale: [1, 1.4, 0],
                       opacity: [1, 1, 0],
                       filter: 'brightness(1.5)',
                     }}
                     transition={{
                       y: {
-                        duration: 3 + (idx % 3),
+                        duration: floatDuration,
                         repeat: Infinity,
                         ease: 'easeInOut',
-                        delay: (idx % 5) * 0.3,
+                        delay: floatDelay,
                       },
                       exit: { duration: 0.25 },
                     }}
@@ -117,44 +116,62 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
                       className="w-full h-full object-contain drop-shadow-lg"
                     />
                   </motion.button>
-                ) : (
+                ) : isRevealed ? (
+                  /* In-Place Revealed Note Card */
                   <motion.div
-                    key={`popped-${b.id}`}
-                    initial={{ scale: 0.3, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="w-12 h-12 rounded-full bg-champagne/15 border border-champagne/30 flex items-center justify-center text-champagne"
+                    key={`card-${b.id}`}
+                    initial={{ scale: 0.5, opacity: 0, rotate: -4 }}
+                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                    className="absolute inset-0 z-30 p-2.5 sm:p-3 rounded-xl bg-[#FAF7F2] border border-champagne/60 shadow-xl flex flex-col justify-between text-midnight text-left"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-champagne/80" />
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[9px] sm:text-[10px] text-rose-deep font-semibold uppercase tracking-wider truncate">
+                        {b.title}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRevealedId(null);
+                        }}
+                        aria-label="Minimize note"
+                        className="text-rosewood/50 hover:text-rosewood p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <p className="font-handwriting text-xs sm:text-sm text-midnight leading-tight my-auto overflow-y-auto max-h-[85px]">
+                      "{b.note}"
+                    </p>
+                    <div className="text-[8px] text-rosewood/40 font-mono text-center">
+                      ✓ popped
+                    </div>
                   </motion.div>
+                ) : (
+                  /* Popped Badge - tap to see note again */
+                  <motion.button
+                    key={`popped-badge-${b.id}`}
+                    type="button"
+                    onClick={() => setRevealedId(b.id)}
+                    aria-label={`View note for ${b.title}`}
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl bg-midnight-surface/80 border border-champagne/40 flex flex-col items-center justify-center p-1 text-center cursor-pointer shadow-md"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-champagne mb-1" />
+                    <span className="font-handwriting text-[10px] sm:text-[11px] text-ivory-dark truncate w-full px-1">
+                      {b.title}
+                    </span>
+                  </motion.button>
                 )}
               </AnimatePresence>
             </div>
           );
         })}
       </div>
-
-      {/* Active Balloon Note Modal / Bottom Card */}
-      <AnimatePresence>
-        {activeNote && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="mt-6 w-full max-w-md p-5 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-champagne/40 shadow-2xl text-midnight text-center"
-          >
-            <span className="font-mono text-xs uppercase tracking-wider text-rose-deep font-semibold">
-              ✨ Secret Message
-            </span>
-            <h4 className="font-serif text-2xl text-rosewood-dark mt-1 mb-2 font-medium">
-              {activeNote.title}
-            </h4>
-            <div className="w-12 h-px bg-champagne mx-auto mb-3" />
-            <p className="font-handwriting text-xl sm:text-2xl text-midnight leading-relaxed">
-              "{activeNote.note}"
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* All Popped Celebration Card */}
       {isAllPopped && (
@@ -184,4 +201,3 @@ export const BalloonGame: React.FC<BalloonGameProps> = ({
     </div>
   );
 };
-

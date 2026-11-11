@@ -5,7 +5,6 @@ import confetti from 'canvas-confetti';
 import { audioManager } from '../../lib/audio';
 import { SectionHeading } from '../ui/SectionHeading';
 import { Button } from '../ui/Button';
-import { GrandFireworksCanvas } from '../effects/GrandFireworksCanvas';
 
 interface BirthdayCakeProps {
   cake: {
@@ -13,8 +12,9 @@ interface BirthdayCakeProps {
     title: string;
     message: string;
     blowButtonLabel: string;
-    micPrompt: string;
+    micButtonLabel: string;
     finalMessage: string;
+    breathSensitivity: number;
   };
   recipientName?: string;
 }
@@ -23,18 +23,24 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
   if (!cake.enabled) return null;
 
   const [isExtinguished, setIsExtinguished] = useState(false);
-  const [showFireworks, setShowFireworks] = useState(false);
   const [isListeningMic, setIsListeningMic] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
+  const [breathLevel, setBreathLevel] = useState(0); // 0–1
 
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const animFrameRef = useRef<number | null>(null);
+  const ambientBaselineRef = useRef<number>(0);
+  const breathTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopMicrophone = () => {
     if (animFrameRef.current) {
       cancelAnimationFrame(animFrameRef.current);
       animFrameRef.current = null;
+    }
+    if (breathTimerRef.current) {
+      clearTimeout(breathTimerRef.current);
+      breathTimerRef.current = null;
     }
     if (mediaStreamRef.current) {
       mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -45,6 +51,7 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
       audioContextRef.current = null;
     }
     setIsListeningMic(false);
+    setBreathLevel(0);
   };
 
   useEffect(() => {
@@ -57,16 +64,13 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
     if (isExtinguished) return;
     stopMicrophone();
     setIsExtinguished(true);
-    setShowFireworks(true);
 
-    // Play fireworks SFX
     audioManager.playSFX('fireworkBurst');
 
     try {
-      // Confetti burst
       confetti({
-        particleCount: 80,
-        spread: 90,
+        particleCount: 50,
+        spread: 70,
         origin: { y: 0.6 },
         colors: ['#D9B887', '#A96E78', '#F5F0E8', '#FFD1DC', '#FAF7F2'],
         disableForReducedMotion: true,
@@ -77,7 +81,7 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
   };
 
   const handleStartMic = async () => {
-    if (isExtinguished) return;
+    if (isExtinguished || isListeningMic) return;
     setMicError(null);
 
     try {
@@ -91,53 +95,91 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
       audioContextRef.current = audioCtx;
 
       const analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
+      analyser.fftSize = 2048;
       const source = audioCtx.createMediaStreamSource(stream);
       source.connect(analyser);
 
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
+      const bufferLength = analyser.fftSize;
+      const dataArray = new Float32Array(bufferLength);
       setIsListeningMic(true);
+
+      // Measure ambient baseline for 500ms
+      let baselineSamples: number[] = [];
+      const baselineEnd = Date.now() + 500;
+
+      let sustainedAboveThreshold = false;
+      let sustainTimerFired = false;
 
       const checkAudioLevel = () => {
         if (!analyser) return;
-        analyser.getByteFrequencyData(dataArray);
+        analyser.getFloatTimeDomainData(dataArray);
 
+        // Calculate RMS
         let sum = 0;
         for (let i = 0; i < bufferLength; i++) {
-          sum += dataArray[i];
+          sum += dataArray[i] * dataArray[i];
         }
-        const average = sum / bufferLength;
+        const rms = Math.sqrt(sum / bufferLength);
 
-        if (average > 48) {
-          handleExtinguish();
+        const now = Date.now();
+
+        if (now < baselineEnd) {
+          baselineSamples.push(rms);
+          animFrameRef.current = requestAnimationFrame(checkAudioLevel);
           return;
         }
 
-        animFrameRef.current = requestAnimationFrame(checkAudioLevel);
+        if (ambientBaselineRef.current === 0 && baselineSamples.length > 0) {
+          ambientBaselineRef.current =
+            baselineSamples.reduce((a, b) => a + b, 0) / baselineSamples.length;
+        }
+
+        const baseline = ambientBaselineRef.current || 0.005;
+        const sensitivity = cake.breathSensitivity ?? 3;
+        const threshold = baseline * (1 + sensitivity);
+
+        // Visual level meter (normalize relative to threshold)
+        const level = Math.min(1, rms / (threshold * 2));
+        setBreathLevel(level);
+
+        const isBlow = rms > threshold;
+
+        if (isBlow && !sustainedAboveThreshold && !sustainTimerFired) {
+          sustainedAboveThreshold = true;
+          breathTimerRef.current = setTimeout(() => {
+            if (sustainedAboveThreshold && !sustainTimerFired) {
+              sustainTimerFired = true;
+              handleExtinguish();
+            }
+          }, 400);
+        } else if (!isBlow && sustainedAboveThreshold) {
+          sustainedAboveThreshold = false;
+          if (breathTimerRef.current) {
+            clearTimeout(breathTimerRef.current);
+            breathTimerRef.current = null;
+          }
+        }
+
+        if (!sustainTimerFired) {
+          animFrameRef.current = requestAnimationFrame(checkAudioLevel);
+        }
       };
 
       checkAudioLevel();
     } catch {
-      setMicError('Microphone access unavailable. Tap the button below to blow out candles!');
+      setMicError("Microphone access unavailable. Tap the button below to blow out candles!");
       stopMicrophone();
     }
   };
 
   const handleRelight = () => {
     setIsExtinguished(false);
-    setShowFireworks(false);
     setMicError(null);
+    ambientBaselineRef.current = 0;
   };
 
   return (
     <div className="relative py-20 px-4 sm:px-6 max-w-xl mx-auto w-full text-center">
-      {/* Project 4 Grand Fireworks Overlay */}
-      <GrandFireworksCanvas
-        active={showFireworks}
-        onFinish={() => setShowFireworks(false)}
-      />
-
       <SectionHeading
         eyebrow="Make A Wish"
         title={cake.title}
@@ -156,26 +198,22 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
 
         {/* SVG Handcrafted Tiered Cake */}
         <div className="relative w-64 sm:w-72 h-64 select-none">
-          <svg
-            viewBox="0 0 300 280"
-            className="w-full h-full drop-shadow-2xl"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Cake Stand / Plate */}
-            <ellipse cx="150" cy="255" rx="135" ry="16" fill="#2A2431" stroke="#D9B887" strokeWidth="2" />
-            <path d="M120 255 L125 275 L175 275 L180 255 Z" fill="#1C1822" stroke="#D9B887" strokeWidth="1.5" />
-
+          <svg viewBox="0 0 300 280" className="w-full h-full drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)]">
             {/* Bottom Tier */}
             <path
-              d="M50 185 C50 170 250 170 250 185 L250 240 C250 255 50 255 50 240 Z"
-              fill="#FAF7F2"
+              d="M30 230 C30 215 270 215 270 230 L270 265 C270 280 30 280 30 265 Z"
+              fill="#F2EBE0"
               stroke="#D9B887"
               strokeWidth="2"
             />
-            {/* Bottom Tier Frosting Ribbon */}
+            {/* Bottom Tier Frosting */}
             <path
-              d="M50 195 C75 205 100 190 125 200 C150 210 175 195 200 205 C225 215 250 195 250 195"
+              d="M30 230 Q50 245 70 230 Q90 248 110 230 Q130 246 150 230 Q170 248 190 230 Q210 246 230 230 Q250 248 270 230"
+              fill="#A96E78"
+            />
+            {/* Bottom Tier decoration */}
+            <path
+              d="M50 255 C75 265 100 250 125 260 C150 270 175 255 200 265 C225 275 250 255 250 255"
               stroke="#A96E78"
               strokeWidth="6"
               strokeLinecap="round"
@@ -229,6 +267,17 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
           </svg>
         </div>
 
+        {/* Mic level meter */}
+        {isListeningMic && !isExtinguished && (
+          <div className="mt-2 w-40 h-2 rounded-full bg-midnight/40 overflow-hidden border border-champagne/20">
+            <motion.div
+              className="h-full rounded-full bg-champagne"
+              animate={{ width: `${breathLevel * 100}%` }}
+              transition={{ duration: 0.05 }}
+            />
+          </div>
+        )}
+
         {/* Action Controls */}
         <div className="mt-6 flex flex-col items-center gap-3">
           {!isExtinguished ? (
@@ -246,13 +295,13 @@ export const BirthdayCake: React.FC<BirthdayCakeProps> = ({ cake }) => {
                 type="button"
                 onClick={handleStartMic}
                 disabled={isListeningMic}
-                className="inline-flex items-center gap-1.5 text-xs text-champagne/70 hover:text-champagne transition-colors mt-2"
+                className="inline-flex items-center gap-1.5 text-xs text-champagne/70 hover:text-champagne transition-colors mt-2 disabled:opacity-50"
               >
                 <Mic className="w-3.5 h-3.5" />
                 <span>
                   {isListeningMic
-                    ? 'Listening... blow into your microphone now!'
-                    : cake.micPrompt}
+                    ? 'Listening — blow gently now...'
+                    : cake.micButtonLabel}
                 </span>
               </button>
 

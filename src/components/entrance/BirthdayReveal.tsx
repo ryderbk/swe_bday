@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowDown, Heart } from 'lucide-react';
+import { Sparkles, ArrowDown } from 'lucide-react';
 import { BackgroundDust } from '../ui/BackgroundDust';
 import { Button } from '../ui/Button';
 
@@ -16,8 +16,6 @@ interface BirthdayRevealProps {
 }
 
 export const BirthdayReveal: React.FC<BirthdayRevealProps> = ({
-  recipientName,
-  senderName,
   title,
   subtitle,
   message,
@@ -53,7 +51,7 @@ export const BirthdayReveal: React.FC<BirthdayRevealProps> = ({
           <Sparkles className="w-3.5 h-3.5 text-champagne" />
         </motion.div>
 
-        {/* Project 2 Bunny + Bear Birthday Artwork */}
+        {/* Bunny + Bear Birthday Artwork */}
         {teddyImage && (
           <motion.div
             initial={{ opacity: 0, scale: 0.85, y: 15 }}
@@ -110,17 +108,6 @@ export const BirthdayReveal: React.FC<BirthdayRevealProps> = ({
           >
             {buttonLabel}
           </Button>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.05, duration: 0.8 }}
-          className="mt-8 flex items-center gap-2 text-xs text-ivory-dark/50"
-        >
-          <span>Created with</span>
-          <Heart className="w-3.5 h-3.5 text-rose-muted fill-rose-muted inline" />
-          <span>by {senderName} for {recipientName}</span>
         </motion.div>
       </motion.div>
     </div>
